@@ -1,0 +1,894 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>ほめらる - あなたの小さな避難所</title>
+<style>
+:root {
+  --bg: #F8F6F2;
+  --text: #3F3A36;
+  --text-light: #8A8580;
+  --card-bg: #FFFFFF;
+  --shadow: 0 2px 16px rgba(63,58,54,0.06);
+  --radius: 16px;
+  --radius-lg: 24px;
+
+  --maru-main: #D8B84C;
+  --maru-sub: #F4E7B2;
+  --maru-accent: #A8891F;
+
+  --nagi-main: #6F8FAF;
+  --nagi-sub: #DCE7F0;
+  --nagi-accent: #4F6B86;
+
+  --rin-main: #8A6F5A;
+  --rin-sub: #E8DDD4;
+  --rin-accent: #5E493B;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100dvh;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+  overflow-x: hidden;
+}
+
+.screen {
+  display: none;
+  min-height: 100dvh;
+  padding: 0 20px;
+  animation: fadeIn 0.4s ease;
+}
+
+.screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.02); }
+}
+
+/* ===== Home Screen ===== */
+#home {
+  justify-content: center;
+  align-items: center;
+  gap: 32px;
+  padding-top: 60px;
+  padding-bottom: 40px;
+}
+
+.home-greeting {
+  text-align: center;
+  animation: slideUp 0.6s ease;
+}
+
+.home-greeting .time-label {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-bottom: 8px;
+}
+
+.home-greeting h1 {
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--text);
+  line-height: 1.6;
+}
+
+.daily-message {
+  text-align: center;
+  font-size: 14px;
+  color: var(--text-light);
+  padding: 16px 24px;
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  max-width: 320px;
+  animation: slideUp 0.8s ease;
+  line-height: 1.8;
+}
+
+.character-select {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  width: 100%;
+  max-width: 340px;
+  animation: slideUp 1s ease;
+}
+
+.character-select h2 {
+  font-size: 14px;
+  color: var(--text-light);
+  text-align: center;
+  font-weight: 400;
+  margin-bottom: 4px;
+}
+
+.char-btn {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 18px 20px;
+  background: var(--card-bg);
+  border: 2px solid transparent;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: left;
+  width: 100%;
+  font-family: inherit;
+}
+
+.char-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(63,58,54,0.1);
+}
+
+.char-btn:active {
+  transform: scale(0.98);
+}
+
+.char-dot {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  animation: breathe 3s ease infinite;
+}
+
+.char-btn[data-char="maru"] .char-dot { background: var(--maru-main); }
+.char-btn[data-char="nagi"] .char-dot { background: var(--nagi-main); }
+.char-btn[data-char="rin"] .char-dot { background: var(--rin-main); }
+
+.char-btn[data-char="maru"]:hover { border-color: var(--maru-sub); }
+.char-btn[data-char="nagi"]:hover { border-color: var(--nagi-sub); }
+.char-btn[data-char="rin"]:hover { border-color: var(--rin-sub); }
+
+.char-info .char-name {
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.char-info .char-desc {
+  font-size: 12px;
+  color: var(--text-light);
+}
+
+.char-btn[data-char="maru"] .char-name { color: var(--maru-accent); }
+.char-btn[data-char="nagi"] .char-name { color: var(--nagi-accent); }
+.char-btn[data-char="rin"] .char-name { color: var(--rin-accent); }
+
+/* ===== Input Screen ===== */
+#input-screen {
+  justify-content: center;
+  align-items: center;
+  gap: 24px;
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+.input-back {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background: none;
+  border: none;
+  font-size: 14px;
+  color: var(--text-light);
+  cursor: pointer;
+  font-family: inherit;
+  padding: 8px;
+}
+
+.input-header {
+  text-align: center;
+}
+
+.input-header .selected-dot {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  margin: 0 auto 16px;
+}
+
+.input-header p {
+  font-size: 16px;
+  color: var(--text);
+  line-height: 1.7;
+}
+
+.input-area {
+  width: 100%;
+  max-width: 340px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.input-area textarea {
+  width: 100%;
+  min-height: 100px;
+  padding: 16px;
+  border: 2px solid #EAE6E0;
+  border-radius: var(--radius);
+  font-family: inherit;
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--text);
+  background: var(--card-bg);
+  resize: none;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input-area textarea:focus {
+  border-color: var(--text-light);
+}
+
+.input-area textarea::placeholder {
+  color: #C4BFB8;
+}
+
+.topic-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+}
+
+.topic-tag {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: 1.5px solid #E0DBD4;
+  background: var(--card-bg);
+  font-size: 13px;
+  color: var(--text-light);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.topic-tag:hover, .topic-tag.selected {
+  background: #EAE6E0;
+  color: var(--text);
+  border-color: #C4BFB8;
+}
+
+.listen-btn {
+  width: 100%;
+  max-width: 340px;
+  padding: 18px;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  color: #fff;
+  cursor: pointer;
+  font-family: inherit;
+  letter-spacing: 0.05em;
+  transition: all 0.25s;
+}
+
+.listen-btn:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.listen-btn:active {
+  transform: scale(0.98);
+}
+
+.listen-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+  transform: none;
+}
+
+/* ===== Chat Screen ===== */
+#chat-screen {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  justify-content: flex-start;
+}
+
+.chat-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 0;
+  margin-bottom: 20px;
+}
+
+.chat-header .chat-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.chat-header .chat-name {
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.chat-back {
+  margin-left: auto;
+  background: none;
+  border: none;
+  font-size: 13px;
+  color: var(--text-light);
+  cursor: pointer;
+  font-family: inherit;
+  padding: 8px;
+}
+
+.chat-messages {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 20px;
+}
+
+.msg-bubble {
+  max-width: 85%;
+  padding: 16px 20px;
+  border-radius: 20px 20px 20px 4px;
+  font-size: 15px;
+  line-height: 1.8;
+  animation: slideUp 0.5s ease;
+  box-shadow: 0 1px 8px rgba(63,58,54,0.04);
+}
+
+.msg-user {
+  align-self: flex-end;
+  background: #EAE6E0;
+  color: var(--text);
+  border-radius: 20px 20px 4px 20px;
+  font-size: 14px;
+}
+
+.typing-indicator {
+  display: flex;
+  gap: 6px;
+  padding: 16px 20px;
+  max-width: 80px;
+  border-radius: 20px 20px 20px 4px;
+  animation: slideUp 0.3s ease;
+}
+
+.typing-indicator span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  animation: typingDot 1.2s ease infinite;
+}
+
+.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingDot {
+  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
+  30% { opacity: 1; transform: translateY(-4px); }
+}
+
+/* ===== Feedback ===== */
+.feedback-area {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  padding: 16px 0;
+  animation: slideUp 0.5s ease;
+}
+
+.feedback-btn {
+  padding: 12px 24px;
+  border-radius: 24px;
+  border: 2px solid #E0DBD4;
+  background: var(--card-bg);
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.feedback-btn:hover {
+  transform: translateY(-2px);
+}
+
+.feedback-btn.positive:hover {
+  border-color: var(--maru-main);
+  background: var(--maru-sub);
+}
+
+.feedback-btn.negative:hover {
+  border-color: #C4BFB8;
+  background: #F0EDED;
+}
+
+.feedback-result {
+  text-align: center;
+  font-size: 13px;
+  color: var(--text-light);
+  padding: 12px;
+  animation: fadeIn 0.3s ease;
+}
+
+.another-btn {
+  display: block;
+  margin: 12px auto 0;
+  padding: 14px 32px;
+  border-radius: 24px;
+  border: 2px solid #E0DBD4;
+  background: var(--card-bg);
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.2s;
+}
+
+.another-btn:hover {
+  background: #EAE6E0;
+}
+
+/* ===== Utility ===== */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0,0,0,0);
+}
+</style>
+</head>
+<body>
+
+<!-- ===== HOME ===== -->
+<div id="home" class="screen active">
+  <div class="home-greeting">
+    <p class="time-label" id="time-label"></p>
+    <h1 id="greeting-text"></h1>
+  </div>
+
+  <div class="daily-message" id="daily-message"></div>
+
+  <div class="character-select">
+    <h2>だれに聞いてもらう？</h2>
+    <button class="char-btn" data-char="maru" onclick="selectCharacter('maru')">
+      <div class="char-dot"></div>
+      <div class="char-info">
+        <div class="char-name">まる</div>
+        <div class="char-desc">気軽に話せる親友みたいな存在</div>
+      </div>
+    </button>
+    <button class="char-btn" data-char="nagi" onclick="selectCharacter('nagi')">
+      <div class="char-dot"></div>
+      <div class="char-info">
+        <div class="char-name">凪</div>
+        <div class="char-desc">静かに受け止めてくれる存在</div>
+      </div>
+    </button>
+    <button class="char-btn" data-char="rin" onclick="selectCharacter('rin')">
+      <div class="char-dot"></div>
+      <div class="char-info">
+        <div class="char-name">凛</div>
+        <div class="char-desc">大人の優しさで包んでくれる存在</div>
+      </div>
+    </button>
+  </div>
+</div>
+
+<!-- ===== INPUT ===== -->
+<div id="input-screen" class="screen">
+  <button class="input-back" onclick="goHome()">← もどる</button>
+  <div class="input-header">
+    <div class="selected-dot" id="selected-dot"></div>
+    <p id="input-prompt"></p>
+  </div>
+  <div class="input-area">
+    <textarea id="user-input" placeholder="話したいこと、なんでも。&#10;書かなくてもだいじょうぶ。" maxlength="200"></textarea>
+    <div class="topic-tags">
+      <button class="topic-tag" onclick="toggleTag(this)">体調がつらい</button>
+      <button class="topic-tag" onclick="toggleTag(this)">仕事で疲れた</button>
+      <button class="topic-tag" onclick="toggleTag(this)">家事がしんどい</button>
+      <button class="topic-tag" onclick="toggleTag(this)">子どものこと</button>
+      <button class="topic-tag" onclick="toggleTag(this)">親の介護</button>
+      <button class="topic-tag" onclick="toggleTag(this)">自分の時間がない</button>
+      <button class="topic-tag" onclick="toggleTag(this)">なんとなくつらい</button>
+    </div>
+  </div>
+  <button class="listen-btn" id="listen-btn" onclick="startChat()">聞いてくれる？</button>
+</div>
+
+<!-- ===== CHAT ===== -->
+<div id="chat-screen" class="screen">
+  <div class="chat-header">
+    <div class="chat-dot" id="chat-dot"></div>
+    <span class="chat-name" id="chat-name"></span>
+    <button class="chat-back" onclick="goHome()">ホームへ</button>
+  </div>
+  <div class="chat-messages" id="chat-messages"></div>
+</div>
+
+<script>
+// ===== State =====
+let currentChar = null;
+let selectedTags = [];
+let feedbackHistory = JSON.parse(localStorage.getItem('homete_feedback') || '{}');
+
+// ===== Characters =====
+const characters = {
+  maru: {
+    name: 'まる',
+    main: '#D8B84C', sub: '#F4E7B2', accent: '#A8891F',
+    inputPrompt: 'なにがあったか、聞かせて？\n書かなくてもいいよ、タグだけでもOK！',
+    responses: {
+      '体調がつらい': [
+        ['体調しんどいの、ほんとつらいよね。', 'でもちゃんと「つらい」って言えてるの、えらいよ。', '今日はもう、それだけで合格。'],
+        ['うんうん、体がきついときって何もかも重くなるよね。', '無理しないでって言われても無理するのがあなただから…', 'せめて今だけは、力抜いていいよ。'],
+        ['あー、それはしんどいわ…。', '体調悪いのにちゃんと一日過ごしてるのすごいよ？', '今日はこれ以上がんばらなくていい日にしよう。']
+      ],
+      '仕事で疲れた': [
+        ['仕事おつかれ！よくがんばったね。', 'ちゃんと疲れてるってことは、ちゃんとやってる証拠だよ。', '今日の自分に「おつかれ」って言ってあげて。'],
+        ['仕事の疲れって、体だけじゃなくて心にもくるよね。', 'でもさ、今日もちゃんと乗り切ったんでしょ？', 'それ、ふつうにすごいことだよ。'],
+        ['おつかれさま！ほんとに。', '疲れたって思えるのは、全力でやった証だよね。', '今夜はもう、好きなことだけしていいよ。']
+      ],
+      '家事がしんどい': [
+        ['家事ってね、終わらないのがいちばんしんどいんだよね。', '誰にも褒められないし、やって当たり前みたいにされるし。', 'でも私は知ってるよ、あなたがどれだけやってるか。'],
+        ['家事おつかれ！地味にめちゃくちゃ大変だよね。', '今日やった分、ちゃんとカウントしていいからね。', 'さぼった分じゃなくて、やった分を数えよう。'],
+        ['わかる〜、家事ってほんと無限ループだよね。', '完璧にやろうとしなくていいんだよ。', '今日できた分で十分。ほんとに。']
+      ],
+      '子どものこと': [
+        ['子どものこと考えてるだけで、もう十分いいお母さんだよ。', 'うまくいかない日があって当然。', 'あなたは関わろうとしてるし、それがいちばん大事。'],
+        ['子育てって正解がないからしんどいよね。', 'でもね、悩んでるってことは向き合ってるってこと。', 'あなたのその気持ち、ちゃんと届いてると思うよ。'],
+        ['子どものことで頭がいっぱいになるよね。', 'いいお母さんじゃなくていい、ふつうのあなたでいい。', '完璧じゃなくても、いるだけでいいんだよ。']
+      ],
+      '親の介護': [
+        ['介護しながら毎日過ごしてるの、本当にすごいことだよ。', 'しんどいって思っていいからね。', '自分のことも大事にしていいんだよ。'],
+        ['介護って、先が見えないのがいちばんきついよね。', '弱音吐いていいよ、ここでは。', 'がんばってる自分を、もうちょっとだけ認めてあげて。'],
+        ['親のこと気にかけて、えらいよ。', '疲れてない？ちゃんと息してる？', '今日もよくやったよ。それだけは確か。']
+      ],
+      '自分の時間がない': [
+        ['自分の時間がないって、地味にめちゃくちゃきついよね。', 'いつも誰かのために動いてるんだもんね。', '今この瞬間、ちょっとだけ自分に戻れてたらいいな。'],
+        ['「自分の時間がほしい」って思うの、わがままじゃないよ。', '当たり前の欲求だよ。', 'この数秒だけでも、あなたの時間。'],
+        ['毎日誰かのために動いてるんだね。', 'えらいよ、ほんとに。', 'たまには「なにもしない」を選んでもいいんだよ。']
+      ],
+      'なんとなくつらい': [
+        ['なんとなくつらいって、いちばん言いにくいやつだよね。', '理由がなくてもつらいもんはつらい。', 'ちゃんとここに来れたの、えらいよ。'],
+        ['はっきりした理由がなくても、しんどいときってあるよね。', 'それ、気のせいじゃないよ。', 'あなたの「つらい」は本物だよ。'],
+        ['うんうん、なんとなくつらいの、わかるよ。', '無理に元気出さなくていいからね。', 'そのままでいていいよ、今は。']
+      ],
+      'default': [
+        ['うんうん、聞いてるよ。', 'ちゃんとここに来れたの、えらいね。', '今日もよくがんばったよ。'],
+        ['話してくれてありがとう。', 'あなたがいるだけで、十分すごいよ。', '今日の自分にまるあげよう。'],
+        ['おつかれさま！', '毎日ちゃんと過ごしてるだけですごいよ。', '自分をもっと褒めていいからね。']
+      ]
+    }
+  },
+  nagi: {
+    name: '凪',
+    main: '#6F8FAF', sub: '#DCE7F0', accent: '#4F6B86',
+    inputPrompt: '聞いているよ。\n話しても、話さなくても。',
+    responses: {
+      '体調がつらい': [
+        ['体、つらいんだね。', 'それでも今日を過ごしてる。', 'それだけで十分。'],
+        ['しんどいとき、無理しなくていい。', '体がつらいって、心もつらい。', '…少し休もう。'],
+        ['うん。つらいね。', '今は何もしなくていい時間。', 'ここにいるよ。']
+      ],
+      '仕事で疲れた': [
+        ['おつかれさま。', '今日もちゃんと向き合ったんだね。', '…すごいよ、それは。'],
+        ['疲れたね。', '帰ってこれただけで、もう十分。', 'あとは休むだけ。'],
+        ['仕事、おつかれさま。', '心、張り詰めてない？', '…少しだけ、ゆるめていいよ。']
+      ],
+      '家事がしんどい': [
+        ['終わらない家事、しんどいよね。', '誰も気づかなくても、やったのは事実。', '…知ってるよ。'],
+        ['うん。', 'がんばってるの、見えてる。', '完璧じゃなくていい。'],
+        ['家事、おつかれさま。', '目に見えない努力だよね。', 'でも、ちゃんと積み重なってるよ。']
+      ],
+      '子どものこと': [
+        ['子どものこと、考えてるんだね。', 'それだけで、十分。', '…大丈夫だよ。'],
+        ['うまくいかない日もある。', 'でも向き合おうとしてるのは、伝わってる。', '自分を責めなくていいよ。'],
+        ['子どものこと、気にかけてるだけで、もう十分。', 'あなたは、ちゃんとそこにいる。', '…それがいちばん大事。']
+      ],
+      '親の介護': [
+        ['介護、続けてるんだね。', '…すごいことだよ、それ。', 'つらいときは、つらいって言っていい。'],
+        ['がんばってるね。', '無理してない？', '…あなたの気持ちも大事だから。'],
+        ['ひとりで抱えてない？', '弱音は、弱さじゃない。', 'ここでは降ろしていいよ。']
+      ],
+      '自分の時間がない': [
+        ['自分の時間、なくなってるんだね。', '…それは、きつい。', 'この数秒だけ、あなたの時間。'],
+        ['いつも誰かのために動いてる。', 'でも今は、あなたのための時間。', '…ゆっくりしていいよ。'],
+        ['自分がなくなる感じ、つらいよね。', 'あなたは、あなたのままでいていい。', '…忘れないでね。']
+      ],
+      'なんとなくつらい': [
+        ['理由がなくても、つらいものはつらい。', '…うん。', 'そのままでいい。'],
+        ['なんとなく、って大事なサイン。', '気のせいじゃないよ。', '…ちゃんと感じてる証拠。'],
+        ['言葉にならないつらさ、あるよね。', '無理に言葉にしなくていい。', 'ただ、ここにいて。']
+      ],
+      'default': [
+        ['うん、聞いてるよ。', '…来てくれてありがとう。', 'ゆっくりでいい。'],
+        ['ここに来れた。', 'それだけで、今日は十分。', '…大丈夫。'],
+        ['うん。', 'あなたの毎日は、ちゃんと意味がある。', '…忘れないでね。']
+      ]
+    }
+  },
+  rin: {
+    name: '凛',
+    main: '#8A6F5A', sub: '#E8DDD4', accent: '#5E493B',
+    inputPrompt: 'どうぞ、聞かせてくださいね。\n何も書かなくても構いませんよ。',
+    responses: {
+      '体調がつらい': [
+        ['お体がつらいんですね。', 'それでも今日を過ごしているあなたは、本当にえらいですよ。', '少しだけ、自分を甘やかしてあげてくださいね。'],
+        ['体調が優れないときは、何もかもが重く感じますよね。', '無理をしないでいいんですよ。', 'あなたがあなたでいるだけで、十分ですから。'],
+        ['しんどいですよね。', 'でもね、しんどい中で日々を回しているあなたは、とても強い人です。', '今日は自分に優しくする日にしましょうね。']
+      ],
+      '仕事で疲れた': [
+        ['おつかれさまです。', '責任感の強いあなただからこそ、疲れるんですよね。', '今日のあなた、よくがんばりましたよ。'],
+        ['お仕事、おつかれさまでした。', '疲れたということは、今日もちゃんと向き合った証拠ですよ。', 'もう十分ですからね。'],
+        ['お仕事の疲れ、背負ってきたんですね。', '荷物を降ろしていい時間ですよ。', 'あなたはもう、十分やりましたから。']
+      ],
+      '家事がしんどい': [
+        ['家事は、誰にも褒められないのに毎日続くもの。', '本当に大変ですよね。', 'あなたがやっていること、私はちゃんと知っていますよ。'],
+        ['完璧にやらなくていいんですよ。', '今日できた分だけで、もう立派です。', 'あなたの日常は、たくさんの人を支えていますから。'],
+        ['お家のこと、おつかれさまです。', '目に見えない仕事だからこそ、疲れますよね。', 'あなたの努力は、ちゃんと積み重なっていますよ。']
+      ],
+      '子どものこと': [
+        ['お子さんのこと、大切に思っているんですね。', 'その気持ちだけで、もう十分すてきなことですよ。', '完璧じゃなくていいんです。あなたがいること自体が、大きな安心ですから。'],
+        ['子育ては、正解がないからこそ悩みますよね。', 'でもね、悩むということは、それだけ真剣に向き合っている証拠です。', 'あなたは、十分がんばっていますよ。'],
+        ['お子さんのこと、気にかけているあなた。', 'その優しさは、言葉にしなくても伝わっているものですよ。', '自分を責めないでくださいね。']
+      ],
+      '親の介護': [
+        ['介護を続けていらっしゃるんですね。', '言葉にならない大変さがありますよね。', 'あなたの時間も、あなたの気持ちも、大切にしていいんですよ。'],
+        ['ご両親のこと、背負っていらっしゃるんですね。', '本当にえらいですよ。', 'でも、全部ひとりで抱えなくていいんですからね。'],
+        ['介護はね、先が見えないからこそ、つらいんですよね。', 'でもあなたがそこにいること自体が、支えになっていますよ。', '…もう少し、自分にも優しくしてあげてくださいね。']
+      ],
+      '自分の時間がない': [
+        ['いつも誰かのために動いていらっしゃるんですね。', 'あなた自身の時間も、ちゃんと必要なものですよ。', '今この瞬間だけは、あなたのための時間にしましょうね。'],
+        ['自分の時間がないというのは、本当につらいことですよね。', 'でもこうしてここに来てくれた時間は、あなたのもの。', '少しだけ、深呼吸してみてくださいね。'],
+        ['毎日、たくさんのことを抱えていらっしゃるんですね。', 'その中で「自分の時間がほしい」と思えること、とても大切なことですよ。', 'あなたの望みは、わがままなんかじゃありませんからね。']
+      ],
+      'なんとなくつらい': [
+        ['はっきりした理由がなくても、つらいものはつらいんです。', 'それは、とても正直な感情ですよ。', 'そのままのあなたで、いいんですからね。'],
+        ['なんとなくつらい、というのは、心がちゃんと感じている証拠です。', '無視しなくていいんですよ。', '今日はそっと、自分を労ってあげてくださいね。'],
+        ['理由がわからないつらさって、ありますよね。', 'でもね、ちゃんとここに来れたあなたは、自分を大切にできる人ですよ。', '…大丈夫です。']
+      ],
+      'default': [
+        ['来てくださって、ありがとうございます。', 'あなたの毎日は、とても尊いものですよ。', '少しだけ、心を休めてくださいね。'],
+        ['話してくださって、嬉しいです。', 'あなたがあなたでいること、それだけで十分すてきなことですよ。', '今日もおつかれさまでした。'],
+        ['ここに来てくれたんですね。', 'あなたの一日は、誰に言われなくても、ちゃんと価値があるものですよ。', '…忘れないでくださいね。']
+      ]
+    }
+  }
+};
+
+// ===== Daily Messages =====
+const dailyMessages = [
+  'ここに来てくれただけで、\n今日のあなたは合格です。',
+  'がんばりすぎなくても、\nあなたはもう十分えらい。',
+  '今日できなかったことより、\n今日やれたことを数えよう。',
+  'あなたの毎日は、\n思っているより、ずっとすごい。',
+  '完璧じゃなくていい。\nここまで来れただけで花丸。',
+  '「疲れた」と思えるのは、\nちゃんと生きてる証拠。',
+  'あなたが思うより、\nあなたはずっとがんばってるよ。',
+  '今日も息してる。\nそれだけで、大丈夫。',
+  '誰に言われなくても、\nあなたの一日には価値がある。',
+  '少しだけ深呼吸。\nそれだけで十分、えらい。'
+];
+
+// ===== Init =====
+function init() {
+  updateGreeting();
+  showDailyMessage();
+}
+
+function updateGreeting() {
+  const hour = new Date().getHours();
+  const label = document.getElementById('time-label');
+  const text = document.getElementById('greeting-text');
+
+  if (hour >= 5 && hour < 10) {
+    label.textContent = 'おはようございます';
+    text.innerHTML = '朝の準備、おつかれさま。<br>今日もここに来てくれてありがとう。';
+  } else if (hour >= 10 && hour < 14) {
+    label.textContent = 'こんにちは';
+    text.innerHTML = 'お昼の時間だね。<br>少しだけ、ひと息つこう。';
+  } else if (hour >= 14 && hour < 18) {
+    label.textContent = 'おつかれさまです';
+    text.innerHTML = '午後もがんばってるんだね。<br>えらいよ。';
+  } else if (hour >= 18 && hour < 22) {
+    label.textContent = 'おつかれさまでした';
+    text.innerHTML = '今日も一日、よくがんばったね。<br>少しだけ、力を抜いていいよ。';
+  } else {
+    label.textContent = 'こんばんは';
+    text.innerHTML = '遅い時間までおつかれさま。<br>今日のあなたは、もう十分がんばった。';
+  }
+}
+
+function showDailyMessage() {
+  const today = new Date();
+  const idx = (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % dailyMessages.length;
+  document.getElementById('daily-message').innerHTML = dailyMessages[idx].replace(/\n/g, '<br>');
+}
+
+// ===== Navigation =====
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+
+function goHome() {
+  currentChar = null;
+  selectedTags = [];
+  showScreen('home');
+}
+
+// ===== Character Selection =====
+function selectCharacter(charId) {
+  currentChar = charId;
+  const char = characters[charId];
+
+  document.getElementById('selected-dot').style.background = char.main;
+  document.getElementById('input-prompt').innerHTML = char.inputPrompt.replace(/\n/g, '<br>');
+  document.getElementById('listen-btn').style.background = char.main;
+  document.getElementById('user-input').value = '';
+
+  document.querySelectorAll('.topic-tag').forEach(t => t.classList.remove('selected'));
+  selectedTags = [];
+
+  showScreen('input-screen');
+  document.getElementById('user-input').focus();
+}
+
+// ===== Tags =====
+function toggleTag(el) {
+  const tag = el.textContent;
+  if (el.classList.contains('selected')) {
+    el.classList.remove('selected');
+    selectedTags = selectedTags.filter(t => t !== tag);
+  } else {
+    el.classList.add('selected');
+    selectedTags.push(tag);
+  }
+}
+
+// ===== Chat =====
+function startChat() {
+  const char = characters[currentChar];
+  const userText = document.getElementById('user-input').value.trim();
+  const tag = selectedTags.length > 0 ? selectedTags[0] : null;
+
+  document.getElementById('chat-dot').style.background = char.main;
+  document.getElementById('chat-name').textContent = char.name;
+  document.getElementById('chat-name').style.color = char.accent;
+
+  const msgArea = document.getElementById('chat-messages');
+  msgArea.innerHTML = '';
+
+  if (userText || tag) {
+    const displayText = userText || tag;
+    const userBubble = document.createElement('div');
+    userBubble.className = 'msg-bubble msg-user';
+    userBubble.textContent = displayText;
+    msgArea.appendChild(userBubble);
+  }
+
+  showScreen('chat-screen');
+
+  const responseKey = tag && char.responses[tag] ? tag : 'default';
+  const variants = char.responses[responseKey];
+  const chosen = variants[Math.floor(Math.random() * variants.length)];
+
+  showTypingThenMessages(chosen, char);
+}
+
+function showTypingThenMessages(messages, char) {
+  const msgArea = document.getElementById('chat-messages');
+  let i = 0;
+
+  function showNext() {
+    if (i >= messages.length) {
+      showFeedback(char);
+      return;
+    }
+
+    const typing = document.createElement('div');
+    typing.className = 'typing-indicator';
+    typing.style.background = char.sub;
+    typing.innerHTML = `<span style="background:${char.main}"></span><span style="background:${char.main}"></span><span style="background:${char.main}"></span>`;
+    msgArea.appendChild(typing);
+    msgArea.scrollTop = msgArea.scrollHeight;
+
+    const delay = 800 + Math.random() * 600;
+    setTimeout(() => {
+      typing.remove();
+      const bubble = document.createElement('div');
+      bubble.className = 'msg-bubble';
+      bubble.style.background = char.sub;
+      bubble.style.color = char.accent;
+      bubble.textContent = messages[i];
+      msgArea.appendChild(bubble);
+      msgArea.scrollTop = msgArea.scrollHeight;
+      i++;
+      setTimeout(showNext, 400 + Math.random() * 300);
+    }, delay);
+  }
+
+  setTimeout(showNext, 600);
+}
+
+function showFeedback(char) {
+  const msgArea = document.getElementById('chat-messages');
+
+  const feedbackDiv = document.createElement('div');
+  feedbackDiv.className = 'feedback-area';
+  feedbackDiv.innerHTML = `
+    <button class="feedback-btn positive" onclick="submitFeedback('good', this)">グッときた</button>
+    <button class="feedback-btn negative" onclick="submitFeedback('meh', this)">いまいち</button>
+  `;
+  msgArea.appendChild(feedbackDiv);
+  msgArea.scrollTop = msgArea.scrollHeight;
+}
+
+function submitFeedback(type, btn) {
+  const feedbackDiv = btn.parentElement;
+  const tag = selectedTags.length > 0 ? selectedTags[0] : 'default';
+
+  if (!feedbackHistory[currentChar]) feedbackHistory[currentChar] = {};
+  if (!feedbackHistory[currentChar][tag]) feedbackHistory[currentChar][tag] = { good: 0, meh: 0 };
+  feedbackHistory[currentChar][tag][type]++;
+  localStorage.setItem('homete_feedback', JSON.stringify(feedbackHistory));
+
+  const resultMsg = type === 'good'
+    ? 'ありがとう。覚えておくね。'
+    : 'ごめんね。もっとあなたに合う言葉、探すね。';
+
+  feedbackDiv.innerHTML = `<div class="feedback-result">${resultMsg}</div>`;
+
+  const anotherBtn = document.createElement('button');
+  anotherBtn.className = 'another-btn';
+  anotherBtn.textContent = 'もう一回聞いてもらう';
+  anotherBtn.onclick = () => selectCharacter(currentChar);
+
+  const homeBtn = document.createElement('button');
+  homeBtn.className = 'another-btn';
+  homeBtn.textContent = 'ホームにもどる';
+  homeBtn.onclick = goHome;
+
+  const msgArea = document.getElementById('chat-messages');
+  msgArea.appendChild(anotherBtn);
+  msgArea.appendChild(homeBtn);
+  msgArea.scrollTop = msgArea.scrollHeight;
+}
+
+init();
+</script>
+</body>
+</html>
