@@ -5,514 +5,88 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>ほめらる - あなたの小さな避難所</title>
 <style>
-:root {
-  --bg: #F8F6F2;
-  --text: #3F3A36;
-  --text-light: #8A8580;
-  --card-bg: #FFFFFF;
-  --shadow: 0 2px 16px rgba(63,58,54,0.06);
-  --radius: 16px;
-  --radius-lg: 24px;
-
-  --maru-main: #D8B84C;
-  --maru-sub: #F4E7B2;
-  --maru-accent: #A8891F;
-
-  --nagi-main: #6F8FAF;
-  --nagi-sub: #DCE7F0;
-  --nagi-accent: #4F6B86;
-
-  --rin-main: #8A6F5A;
-  --rin-sub: #E8DDD4;
-  --rin-accent: #5E493B;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  -webkit-tap-highlight-color: transparent;
-}
-
-body {
-  font-family: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Noto Sans JP", "Yu Gothic", sans-serif;
-  background: var(--bg);
-  color: var(--text);
-  min-height: 100dvh;
-  line-height: 1.7;
-  letter-spacing: 0.02em;
-  overflow-x: hidden;
-}
-
-.screen {
-  display: none;
-  min-height: 100dvh;
-  padding: 0 20px;
-  animation: fadeIn 0.4s ease;
-}
-
-.screen.active {
-  display: flex;
-  flex-direction: column;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(8px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes slideUp {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-@keyframes breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.02); }
-}
-
-/* ===== Home Screen ===== */
-#home {
-  justify-content: center;
-  align-items: center;
-  gap: 32px;
-  padding-top: 60px;
-  padding-bottom: 40px;
-}
-
-.home-greeting {
-  text-align: center;
-  animation: slideUp 0.6s ease;
-}
-
-.home-greeting .time-label {
-  font-size: 13px;
-  color: var(--text-light);
-  margin-bottom: 8px;
-}
-
-.home-greeting h1 {
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--text);
-  line-height: 1.6;
-}
-
-.daily-message {
-  text-align: center;
-  font-size: 14px;
-  color: var(--text-light);
-  padding: 16px 24px;
-  background: var(--card-bg);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  max-width: 320px;
-  animation: slideUp 0.8s ease;
-  line-height: 1.8;
-}
-
-.character-select {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-  max-width: 340px;
-  animation: slideUp 1s ease;
-}
-
-.character-select h2 {
-  font-size: 14px;
-  color: var(--text-light);
-  text-align: center;
-  font-weight: 400;
-  margin-bottom: 4px;
-}
-
-.char-btn {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 18px 20px;
-  background: var(--card-bg);
-  border: 2px solid transparent;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  cursor: pointer;
-  transition: all 0.25s ease;
-  text-align: left;
-  width: 100%;
-  font-family: inherit;
-}
-
-.char-btn:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 20px rgba(63,58,54,0.1);
-}
-
-.char-btn:active {
-  transform: scale(0.98);
-}
-
-.char-dot {
-  width: 44px;
-  height: 44px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  animation: breathe 3s ease infinite;
-}
-
-.char-btn[data-char="maru"] .char-dot { background: var(--maru-main); }
-.char-btn[data-char="nagi"] .char-dot { background: var(--nagi-main); }
-.char-btn[data-char="rin"] .char-dot { background: var(--rin-main); }
-
-.char-btn[data-char="maru"]:hover { border-color: var(--maru-sub); }
-.char-btn[data-char="nagi"]:hover { border-color: var(--nagi-sub); }
-.char-btn[data-char="rin"]:hover { border-color: var(--rin-sub); }
-
-.char-info .char-name {
-  font-size: 16px;
-  font-weight: 600;
-  margin-bottom: 2px;
-}
-
-.char-info .char-desc {
-  font-size: 12px;
-  color: var(--text-light);
-}
-
-.char-btn[data-char="maru"] .char-name { color: var(--maru-accent); }
-.char-btn[data-char="nagi"] .char-name { color: var(--nagi-accent); }
-.char-btn[data-char="rin"] .char-name { color: var(--rin-accent); }
-
-/* ===== Input Screen ===== */
-#input-screen {
-  justify-content: center;
-  align-items: center;
-  gap: 24px;
-  padding-top: 40px;
-  padding-bottom: 40px;
-}
-
-.input-back {
-  position: absolute;
-  top: 20px;
-  left: 20px;
-  background: none;
-  border: none;
-  font-size: 14px;
-  color: var(--text-light);
-  cursor: pointer;
-  font-family: inherit;
-  padding: 8px;
-}
-
-.input-header {
-  text-align: center;
-}
-
-.input-header .selected-dot {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  margin: 0 auto 16px;
-}
-
-.input-header p {
-  font-size: 16px;
-  color: var(--text);
-  line-height: 1.7;
-}
-
-.input-area {
-  width: 100%;
-  max-width: 340px;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.input-area textarea {
-  width: 100%;
-  min-height: 100px;
-  padding: 16px;
-  border: 2px solid #EAE6E0;
-  border-radius: var(--radius);
-  font-family: inherit;
-  font-size: 15px;
-  line-height: 1.7;
-  color: var(--text);
-  background: var(--card-bg);
-  resize: none;
-  outline: none;
-  transition: border-color 0.2s;
-}
-
-.input-area textarea:focus {
-  border-color: var(--text-light);
-}
-
-.input-area textarea::placeholder {
-  color: #C4BFB8;
-}
-
-.topic-tags {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  justify-content: center;
-}
-
-.topic-tag {
-  padding: 8px 16px;
-  border-radius: 20px;
-  border: 1.5px solid #E0DBD4;
-  background: var(--card-bg);
-  font-size: 13px;
-  color: var(--text-light);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-
-.topic-tag:hover, .topic-tag.selected {
-  background: #EAE6E0;
-  color: var(--text);
-  border-color: #C4BFB8;
-}
-
-.listen-btn {
-  width: 100%;
-  max-width: 340px;
-  padding: 18px;
-  border-radius: var(--radius);
-  border: none;
-  font-size: 16px;
-  font-weight: 500;
-  color: #fff;
-  cursor: pointer;
-  font-family: inherit;
-  letter-spacing: 0.05em;
-  transition: all 0.25s;
-}
-
-.listen-btn:hover {
-  transform: translateY(-2px);
-  filter: brightness(1.05);
-}
-
-.listen-btn:active {
-  transform: scale(0.98);
-}
-
-.listen-btn:disabled {
-  opacity: 0.5;
-  cursor: default;
-  transform: none;
-}
-
-/* ===== Chat Screen ===== */
-#chat-screen {
-  padding-top: 20px;
-  padding-bottom: 20px;
-  justify-content: flex-start;
-}
-
-.chat-header {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 0;
-  margin-bottom: 20px;
-}
-
-.chat-header .chat-dot {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  flex-shrink: 0;
-}
-
-.chat-header .chat-name {
-  font-size: 15px;
-  font-weight: 600;
-}
-
-.chat-back {
-  margin-left: auto;
-  background: none;
-  border: none;
-  font-size: 13px;
-  color: var(--text-light);
-  cursor: pointer;
-  font-family: inherit;
-  padding: 8px;
-}
-
-.chat-messages {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  padding-bottom: 20px;
-}
-
-.msg-bubble {
-  max-width: 85%;
-  padding: 16px 20px;
-  border-radius: 20px 20px 20px 4px;
-  font-size: 15px;
-  line-height: 1.8;
-  animation: slideUp 0.5s ease;
-  box-shadow: 0 1px 8px rgba(63,58,54,0.04);
-}
-
-.msg-user {
-  align-self: flex-end;
-  background: #EAE6E0;
-  color: var(--text);
-  border-radius: 20px 20px 4px 20px;
-  font-size: 14px;
-}
-
-.typing-indicator {
-  display: flex;
-  gap: 6px;
-  padding: 16px 20px;
-  max-width: 80px;
-  border-radius: 20px 20px 20px 4px;
-  animation: slideUp 0.3s ease;
-}
-
-.typing-indicator span {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  animation: typingDot 1.2s ease infinite;
-}
-
-.typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-.typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typingDot {
-  0%, 60%, 100% { opacity: 0.3; transform: translateY(0); }
-  30% { opacity: 1; transform: translateY(-4px); }
-}
-
-/* ===== Feedback ===== */
-.feedback-area {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  padding: 16px 0;
-  animation: slideUp 0.5s ease;
-}
-
-.feedback-btn {
-  padding: 12px 24px;
-  border-radius: 24px;
-  border: 2px solid #E0DBD4;
-  background: var(--card-bg);
-  font-size: 14px;
-  color: var(--text);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-
-.feedback-btn:hover {
-  transform: translateY(-2px);
-}
-
-.feedback-btn.positive:hover {
-  border-color: var(--maru-main);
-  background: var(--maru-sub);
-}
-
-.feedback-btn.negative:hover {
-  border-color: #C4BFB8;
-  background: #F0EDED;
-}
-
-.feedback-result {
-  text-align: center;
-  font-size: 13px;
-  color: var(--text-light);
-  padding: 12px;
-  animation: fadeIn 0.3s ease;
-}
-
-.another-btn {
-  display: block;
-  margin: 12px auto 0;
-  padding: 14px 32px;
-  border-radius: 24px;
-  border: 2px solid #E0DBD4;
-  background: var(--card-bg);
-  font-size: 14px;
-  color: var(--text);
-  cursor: pointer;
-  font-family: inherit;
-  transition: all 0.2s;
-}
-
-.another-btn:hover {
-  background: #EAE6E0;
-}
-
-/* ===== Utility ===== */
-.sr-only {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  overflow: hidden;
-  clip: rect(0,0,0,0);
-}
+:root{--bg:#F8F6F2;--text:#3F3A36;--text-light:#8A8580;--card-bg:#FFFFFF;--shadow:0 2px 16px rgba(63,58,54,0.06);--radius:16px;--maru-main:#D8B84C;--maru-sub:#F4E7B2;--maru-accent:#A8891F;--nagi-main:#6F8FAF;--nagi-sub:#DCE7F0;--nagi-accent:#4F6B86;--rin-main:#8A6F5A;--rin-sub:#E8DDD4;--rin-accent:#5E493B;}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+body{font-family:"Hiragino Kaku Gothic ProN","Hiragino Sans","Noto Sans JP","Yu Gothic",sans-serif;background:var(--bg);color:var(--text);min-height:100dvh;line-height:1.7;letter-spacing:0.02em;overflow-x:hidden;}
+.screen{display:none;min-height:100dvh;padding:0 20px;animation:fadeIn 0.4s ease;}
+.screen.active{display:flex;flex-direction:column;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes breathe{0%,100%{transform:scale(1)}50%{transform:scale(1.02)}}
+#home{justify-content:center;align-items:center;gap:32px;padding-top:60px;padding-bottom:40px;}
+.home-greeting{text-align:center;animation:slideUp 0.6s ease;}
+.home-greeting .time-label{font-size:13px;color:var(--text-light);margin-bottom:8px;}
+.home-greeting h1{font-size:20px;font-weight:500;color:var(--text);line-height:1.6;}
+.daily-message{text-align:center;font-size:14px;color:var(--text-light);padding:16px 24px;background:var(--card-bg);border-radius:var(--radius);box-shadow:var(--shadow);max-width:320px;animation:slideUp 0.8s ease;line-height:1.8;}
+.character-select{display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px;animation:slideUp 1s ease;}
+.character-select h2{font-size:14px;color:var(--text-light);text-align:center;font-weight:400;margin-bottom:4px;}
+.char-btn{display:flex;align-items:center;gap:16px;padding:18px 20px;background:var(--card-bg);border:2px solid transparent;border-radius:var(--radius);box-shadow:var(--shadow);cursor:pointer;transition:all 0.25s ease;text-align:left;width:100%;font-family:inherit;}
+.char-btn:hover{transform:translateY(-2px);box-shadow:0 4px 20px rgba(63,58,54,0.1);}
+.char-btn:active{transform:scale(0.98);}
+.char-dot{width:44px;height:44px;border-radius:50%;flex-shrink:0;animation:breathe 3s ease infinite;}
+.char-btn[data-char="maru"] .char-dot{background:var(--maru-main);}
+.char-btn[data-char="nagi"] .char-dot{background:var(--nagi-main);}
+.char-btn[data-char="rin"] .char-dot{background:var(--rin-main);}
+.char-btn[data-char="maru"]:hover{border-color:var(--maru-sub);}
+.char-btn[data-char="nagi"]:hover{border-color:var(--nagi-sub);}
+.char-btn[data-char="rin"]:hover{border-color:var(--rin-sub);}
+.char-info .char-name{font-size:16px;font-weight:600;margin-bottom:2px;}
+.char-info .char-desc{font-size:12px;color:var(--text-light);}
+.char-btn[data-char="maru"] .char-name{color:var(--maru-accent);}
+.char-btn[data-char="nagi"] .char-name{color:var(--nagi-accent);}
+.char-btn[data-char="rin"] .char-name{color:var(--rin-accent);}
+#input-screen{justify-content:center;align-items:center;gap:24px;padding-top:40px;padding-bottom:40px;}
+.input-back{position:absolute;top:20px;left:20px;background:none;border:none;font-size:14px;color:var(--text-light);cursor:pointer;font-family:inherit;padding:8px;}
+.input-header{text-align:center;}
+.input-header .selected-dot{width:56px;height:56px;border-radius:50%;margin:0 auto 16px;}
+.input-header p{font-size:16px;color:var(--text);line-height:1.7;}
+.input-area{width:100%;max-width:340px;display:flex;flex-direction:column;gap:12px;}
+.input-area textarea{width:100%;min-height:100px;padding:16px;border:2px solid #EAE6E0;border-radius:var(--radius);font-family:inherit;font-size:15px;line-height:1.7;color:var(--text);background:var(--card-bg);resize:none;outline:none;transition:border-color 0.2s;}
+.input-area textarea:focus{border-color:var(--text-light);}
+.input-area textarea::placeholder{color:#C4BFB8;}
+.topic-tags{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;}
+.topic-tag{padding:8px 16px;border-radius:20px;border:1.5px solid #E0DBD4;background:var(--card-bg);font-size:13px;color:var(--text-light);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.topic-tag:hover,.topic-tag.selected{background:#EAE6E0;color:var(--text);border-color:#C4BFB8;}
+.listen-btn{width:100%;max-width:340px;padding:18px;border-radius:var(--radius);border:none;font-size:16px;font-weight:500;color:#fff;cursor:pointer;font-family:inherit;letter-spacing:0.05em;transition:all 0.25s;}
+.listen-btn:hover{transform:translateY(-2px);filter:brightness(1.05);}
+.listen-btn:active{transform:scale(0.98);}
+#chat-screen{padding-top:20px;padding-bottom:20px;justify-content:flex-start;}
+.chat-header{display:flex;align-items:center;gap:12px;padding:12px 0;margin-bottom:20px;}
+.chat-header .chat-dot{width:36px;height:36px;border-radius:50%;flex-shrink:0;}
+.chat-header .chat-name{font-size:15px;font-weight:600;}
+.chat-back{margin-left:auto;background:none;border:none;font-size:13px;color:var(--text-light);cursor:pointer;font-family:inherit;padding:8px;}
+.chat-messages{flex:1;display:flex;flex-direction:column;gap:16px;padding-bottom:20px;}
+.msg-bubble{max-width:85%;padding:16px 20px;border-radius:20px 20px 20px 4px;font-size:15px;line-height:1.8;animation:slideUp 0.5s ease;box-shadow:0 1px 8px rgba(63,58,54,0.04);}
+.msg-user{align-self:flex-end;background:#EAE6E0;color:var(--text);border-radius:20px 20px 4px 20px;font-size:14px;}
+.typing-indicator{display:flex;gap:6px;padding:16px 20px;max-width:80px;border-radius:20px 20px 20px 4px;animation:slideUp 0.3s ease;}
+.typing-indicator span{width:8px;height:8px;border-radius:50%;animation:typingDot 1.2s ease infinite;}
+.typing-indicator span:nth-child(2){animation-delay:0.2s}
+.typing-indicator span:nth-child(3){animation-delay:0.4s}
+@keyframes typingDot{0%,60%,100%{opacity:0.3;transform:translateY(0)}30%{opacity:1;transform:translateY(-4px)}}
+.feedback-area{display:flex;gap:12px;justify-content:center;padding:16px 0;animation:slideUp 0.5s ease;}
+.feedback-btn{padding:12px 24px;border-radius:24px;border:2px solid #E0DBD4;background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.feedback-btn:hover{transform:translateY(-2px);}
+.feedback-btn.positive:hover{border-color:var(--maru-main);background:var(--maru-sub);}
+.feedback-btn.negative:hover{border-color:#C4BFB8;background:#F0EDED;}
+.feedback-result{text-align:center;font-size:13px;color:var(--text-light);padding:12px;animation:fadeIn 0.3s ease;}
+.another-btn{display:block;margin:12px auto 0;padding:14px 32px;border-radius:24px;border:2px solid #E0DBD4;background:var(--card-bg);font-size:14px;color:var(--text);cursor:pointer;font-family:inherit;transition:all 0.2s;}
+.another-btn:hover{background:#EAE6E0;}
 </style>
 </head>
 <body>
-
-<!-- ===== HOME ===== -->
 <div id="home" class="screen active">
-  <div class="home-greeting">
-    <p class="time-label" id="time-label"></p>
-    <h1 id="greeting-text"></h1>
-  </div>
-
+  <div class="home-greeting"><p class="time-label" id="time-label"></p><h1 id="greeting-text"></h1></div>
   <div class="daily-message" id="daily-message"></div>
-
   <div class="character-select">
     <h2>だれに聞いてもらう？</h2>
-    <button class="char-btn" data-char="maru" onclick="selectCharacter('maru')">
-      <div class="char-dot"></div>
-      <div class="char-info">
-        <div class="char-name">まる</div>
-        <div class="char-desc">気軽に話せる親友みたいな存在</div>
-      </div>
-    </button>
-    <button class="char-btn" data-char="nagi" onclick="selectCharacter('nagi')">
-      <div class="char-dot"></div>
-      <div class="char-info">
-        <div class="char-name">凪</div>
-        <div class="char-desc">静かに受け止めてくれる存在</div>
-      </div>
-    </button>
-    <button class="char-btn" data-char="rin" onclick="selectCharacter('rin')">
-      <div class="char-dot"></div>
-      <div class="char-info">
-        <div class="char-name">凛</div>
-        <div class="char-desc">大人の優しさで包んでくれる存在</div>
-      </div>
-    </button>
+    <button class="char-btn" data-char="maru" onclick="selectCharacter('maru')"><div class="char-dot"></div><div class="char-info"><div class="char-name">まる</div><div class="char-desc">気ぃ張らんでええ、なんでも話して</div></div></button>
+    <button class="char-btn" data-char="nagi" onclick="selectCharacter('nagi')"><div class="char-dot"></div><div class="char-info"><div class="char-name">凪</div><div class="char-desc">静かに、そばにいる</div></div></button>
+    <button class="char-btn" data-char="rin" onclick="selectCharacter('rin')"><div class="char-dot"></div><div class="char-info"><div class="char-name">凛</div><div class="char-desc">全部受け止めるから、話して</div></div></button>
   </div>
 </div>
-
-<!-- ===== INPUT ===== -->
 <div id="input-screen" class="screen">
   <button class="input-back" onclick="goHome()">← もどる</button>
-  <div class="input-header">
-    <div class="selected-dot" id="selected-dot"></div>
-    <p id="input-prompt"></p>
-  </div>
+  <div class="input-header"><div class="selected-dot" id="selected-dot"></div><p id="input-prompt"></p></div>
   <div class="input-area">
     <textarea id="user-input" placeholder="話したいこと、なんでも。&#10;書かなくてもだいじょうぶ。" maxlength="200"></textarea>
     <div class="topic-tags">
@@ -527,483 +101,297 @@ body {
   </div>
   <button class="listen-btn" id="listen-btn" onclick="startChat()">聞いてくれる？</button>
 </div>
-
-<!-- ===== CHAT ===== -->
 <div id="chat-screen" class="screen">
-  <div class="chat-header">
-    <div class="chat-dot" id="chat-dot"></div>
-    <span class="chat-name" id="chat-name"></span>
-    <button class="chat-back" onclick="goHome()">ホームへ</button>
-  </div>
+  <div class="chat-header"><div class="chat-dot" id="chat-dot"></div><span class="chat-name" id="chat-name"></span><button class="chat-back" onclick="goHome()">ホームへ</button></div>
   <div class="chat-messages" id="chat-messages"></div>
 </div>
-
 <script>
-// ===== State =====
-let currentChar = null;
-let selectedTags = [];
-let feedbackHistory = JSON.parse(localStorage.getItem('homete_feedback') || '{}');
+let currentChar=null,selectedTags=[],lastUsedIndex={};
+let feedbackHistory=JSON.parse(localStorage.getItem('homete_feedback')||'{}');
 
-// ===== Characters =====
-const characters = {
-  maru: {
-    name: 'まる',
-    main: '#D8B84C', sub: '#F4E7B2', accent: '#A8891F',
-    inputPrompt: 'なにがあったか、聞かせて？\n書かなくてもいいよ、タグだけでもOK！',
-    responses: {
-      '体調がつらい': [
-        ['体調しんどいの、ほんとつらいよね。', 'でもちゃんと「つらい」って言えてるの、えらいよ。', '今日はもう、それだけで合格。'],
-        ['うんうん、体がきついときって何もかも重くなるよね。', '無理しないでって言われても無理するのがあなただから…', 'せめて今だけは、力抜いていいよ。'],
-        ['あー、それはしんどいわ…。', '体調悪いのにちゃんと一日過ごしてるのすごいよ？', '今日はこれ以上がんばらなくていい日にしよう。'],
-        ['体がしんどいときって、気持ちまで沈むよね。', 'でもそんな中でもここに来てくれたじゃん。', 'それだけでもう、今日の自分に拍手だよ。'],
-        ['体調つらいのに動いてるの？', 'それ、めちゃくちゃがんばってるよ。', '今日は早めに自分を休ませてあげてね。'],
-        ['しんどいよね、わかる。', '「大丈夫」って言わなくていいからね、ここでは。', 'つらいときはつらいでいいんだよ。'],
-        ['うわ、それは体きついね…。', '横になれるなら横になって。なれないなら、深呼吸だけでもして。', '今のあなたに必要なのは、がんばることじゃなくて休むことだよ。']
+const characters={
+  maru:{name:'まる',main:'#D8B84C',sub:'#F4E7B2',accent:'#A8891F',
+    inputPrompt:'なんかあったん？聞くで〜！\nタグだけでもええから！',
+    responses:{
+      '体調がつらい':[
+        ['体しんどいんやな。','それでも今日一日過ごしてきたん、ほんまえらいで。','今日はもうゆっくりしいや。'],
+        ['あー、それはしんどいわ。','体がきついときって心までしんどなるよな。','せめて今だけは力抜いていいで。'],
+        ['しんどいのに気ぃ張って動いてたんやろ。','そりゃ疲れるって。','今日はもう自分に甘くしたってな。'],
+        ['体調悪いのにちゃんと一日回してきたんやな。','ほんますごいで、それ。','今日はもう寝てええよ。'],
+        ['誰にも言わんと抱えてたんちゃう？','ちゃんと話してくれてありがとな。','今日はゆっくり休んでな。'],
+        ['しんどいって言えるのもえらいんやで。','ちゃんとわかってるやん、自分のこと。','それだけで十分やって。'],
+        ['体がつらい日は、休むのが仕事やで。','それ以上は何もせんでいい。','お疲れ様でした。'],
+        ['今日は100点やって。','生きてるだけで花丸の日もあるんよ。','無理しんといてな。'],
+        ['しんどい中でここ来れたんやろ。','それだけでもう今日は優勝やで。','ゆっくりしいや。'],
       ],
-      '仕事で疲れた': [
-        ['仕事おつかれ！よくがんばったね。', 'ちゃんと疲れてるってことは、ちゃんとやってる証拠だよ。', '今日の自分に「おつかれ」って言ってあげて。'],
-        ['仕事の疲れって、体だけじゃなくて心にもくるよね。', 'でもさ、今日もちゃんと乗り切ったんでしょ？', 'それ、ふつうにすごいことだよ。'],
-        ['おつかれさま！ほんとに。', '疲れたって思えるのは、全力でやった証だよね。', '今夜はもう、好きなことだけしていいよ。'],
-        ['今日も仕事行ったの？えらすぎない？', 'まじで、行くだけでもすごいことだからね。', '帰ってきた自分をちゃんと労ってあげて。'],
-        ['仕事ってさ、やって当たり前みたいにされるけど。', '全然当たり前じゃないからね？', 'あなたが今日やったこと、私はちゃんとすごいと思ってるよ。'],
-        ['おつかれ！もうがんばらなくていい時間だよ。', '今日のあなたは十分やりました。', 'あとはゆっくりする許可、ここで出しとくね。'],
-        ['仕事疲れるよね、ほんとに。', '人間関係とか、締め切りとか、気遣いとか…見えない疲れもあるよね。', 'ぜんぶ含めて、おつかれさま。']
+      '仕事で疲れた':[
+        ['仕事おつかれさま！','よう頑張ってきたな。','疲れてるってことはちゃんとやってきた証拠やで。'],
+        ['気ぃ張って張って張りっぱなしやったんちゃう？','そりゃ疲れるって。','今は全部降ろしていいんやで。'],
+        ['誰も褒めてくれへんかったかもしれんけど、私が言うとくわ。','今日のあんた、ほんまによくやってたで。','おつかれさま。'],
+        ['責任感強い人ほど疲れるんよな。','あんたがそのタイプやってわかるで。','今日はもう手放していいんやで。'],
+        ['おつかれって言ってくれる人おらんかったかもしれんけど。','ちゃんと言うで、おつかれさまでした。','本当に。'],
+        ['今日もよう戦ってきたな。','誰も見てへんとこでもちゃんとやってたの知ってるで。','おつかれ。'],
+        ['会社では言われへんかったかもしれんけど。','今日のあんた、ほんまにえらかったで。','私が保証するわ。'],
+        ['仕事のことは今日はここまでにしいや。','あんたには休む時間も絶対必要やから。','大事にしてな。'],
+        ['よう頑張ったな。','今日は力抜いていいで。','気合いだけでここまで来た感じやろ？ほんまおつかれ。'],
       ],
-      '家事がしんどい': [
-        ['家事ってね、終わらないのがいちばんしんどいんだよね。', '誰にも褒められないし、やって当たり前みたいにされるし。', 'でも私は知ってるよ、あなたがどれだけやってるか。'],
-        ['家事おつかれ！地味にめちゃくちゃ大変だよね。', '今日やった分、ちゃんとカウントしていいからね。', 'さぼった分じゃなくて、やった分を数えよう。'],
-        ['わかる〜、家事ってほんと無限ループだよね。', '完璧にやろうとしなくていいんだよ。', '今日できた分で十分。ほんとに。'],
-        ['洗濯、掃除、ごはん、片付け…終わらないよね。', 'しかも誰も「ありがとう」って言わないし。', 'だから私が言うね。ありがとう、毎日おつかれさま。'],
-        ['家事って「やらなかった分」ばかり目につくよね。', 'でもさ、やった分を見てよ。', 'めっちゃがんばってるじゃん。それでいいんだよ。'],
-        ['家事しんどいよね〜。', '手抜きしていいんだよ？ほんとに。', '今日はお惣菜でも冷食でも、それで正解だから。'],
-        ['毎日の家事って、マラソンみたいなものだよね。', 'ゴールがないのに走り続けてるんだもん。', 'ちょっと歩いても、止まっても、全然いいんだよ。']
+      '家事がしんどい':[
+        ['家事って終わらへんのに誰も褒めてくれへんよな。','それがいちばんしんどいとこやと思うで。','ちゃんとわかってるよ。'],
+        ['手抜きしてもええんやで。','というかむしろ手抜きを覚えてほしいくらいやって。','完璧にせんでいいんよ。'],
+        ['ご飯作るだけで偉業やで。','毎日続けてるの、ほんまにすごいって。','あたりまえちゃうからな。'],
+        ['今日の家事、ちゃんとカウントしといてな。','見えへん仕事こそいちばん大事やから。','おつかれさま。'],
+        ['今日は休憩を家事の一部にしいや。','人間やから当然休む権利あるやん。','堂々と休んでな。'],
+        ['家事って誰かのために動き続けることやんか。','それって地味にめちゃくちゃすごいことやで。','えらいよ。'],
+        ['できへんかった分は数えんでええんやで。','今日やった分だけ見いや。','ちゃんとあるから。'],
+        ['しんどいって言いながらでも進んでたんやな。','それだけで十分すごいって。','今日はゆっくり休んでな。'],
+        ['今日ここ来れた時点で優勝やで。','ちゃんと自分のこと大事にできてるやん。','ゆっくりしいや。'],
       ],
-      '子どものこと': [
-        ['子どものこと考えてるだけで、もう十分いいお母さんだよ。', 'うまくいかない日があって当然。', 'あなたは関わろうとしてるし、それがいちばん大事。'],
-        ['子育てって正解がないからしんどいよね。', 'でもね、悩んでるってことは向き合ってるってこと。', 'あなたのその気持ち、ちゃんと届いてると思うよ。'],
-        ['子どものことで頭がいっぱいになるよね。', 'いいお母さんじゃなくていい、ふつうのあなたでいい。', '完璧じゃなくても、いるだけでいいんだよ。'],
-        ['子どものことで悩んでるの、しんどいよね。', 'でもそれだけ真剣に考えてるってことだよ。', '十分すぎるくらい、がんばってるよ。'],
-        ['子育てって孤独だよね、意外と。', '周りに相談しにくいこともあるし。', 'でもここでは何でも言っていいからね。'],
-        ['怒っちゃった日も、うまくいかなかった日も、', 'それでも関わり続けてるあなたがすごいんだよ。', '自分を責めすぎないでね。'],
-        ['「もっとこうしてあげたかった」って思うよね。', 'でもさ、そう思える時点でもう十分だよ。', 'あなたの愛情は、ちゃんとあるから。']
+      '子どものこと':[
+        ['子どものこと考えてるだけで、もうええお母さんやで。','完璧な親なんておらんねんから。','あんたのままでええ。'],
+        ['子育てって正解ないのに一生懸命探してるやんか。','それだけでもう十分すごいお母さんやって。','自信持ちや。'],
+        ['怒ってしまう日もあるよな。','それでも次の日また向き合えるのがすごいんやで。','続けてるやんか。'],
+        ['子どものことで頭いっぱいになるよな。','でもな、いいお母さんじゃなくていいんやで。','ふつうのあんたでええ。'],
+        ['うまくいかん日もあるよな。','でも悩んでるってことは向き合ってる証拠やんか。','逃げてへんやんか。'],
+        ['子どものこと、誰にも言わんと抱えてたんちゃう？','ひとりで全部背負わんでええんやで。','話してくれてよかった。'],
+        ['子どものことを考えながら自分のことも抱えてるんやな。','ダブルで大変やのにちゃんとやってる。','すごいで。'],
+        ['悩んで当然、迷って当然やって。','それだけ一生懸命やってる証拠やもん。','ほんまえらいよ。'],
+        ['今日ここ来れた時点で優勝やで。','子どものこと考えながらもちゃんと自分を大事にできてる。','えらいよ。'],
       ],
-      '親の介護': [
-        ['介護しながら毎日過ごしてるの、本当にすごいことだよ。', 'しんどいって思っていいからね。', '自分のことも大事にしていいんだよ。'],
-        ['介護って、先が見えないのがいちばんきついよね。', '弱音吐いていいよ、ここでは。', 'がんばってる自分を、もうちょっとだけ認めてあげて。'],
-        ['親のこと気にかけて、えらいよ。', '疲れてない？ちゃんと息してる？', '今日もよくやったよ。それだけは確か。'],
-        ['介護って、終わりが見えないのがしんどいよね。', '毎日同じようで、毎日違う大変さがあるし。', 'あなたが倒れたら元も子もないから、自分も大事にしてね。'],
-        ['親のことで頭がいっぱいだよね。', 'でも「申し訳ない」って思わなくていいからね。', 'あなたはちゃんと向き合ってるよ。'],
-        ['介護してると、自分の感情を後回しにしちゃうよね。', 'でもあなたの気持ちも大事だよ。', 'イライラも悲しみも、感じていいんだよ。'],
-        ['介護と日常の両立、ほんとに大変だよね。', '完璧にやろうとしなくていいからね。', '助けを求めるのは弱さじゃないよ。']
+      '親の介護':[
+        ['介護しながら毎日生活まわしてるの、ほんまにすごいことやで。','誰もわかってくれへんかもしれんけど私はわかってるで。','おつかれさま。'],
+        ['しんどいって思っていいんやで。','むしろしんどくない方がおかしいくらいやって。','ちゃんと感じていいんよ。'],
+        ['ひとりで抱えすぎてへん？','誰かに頼ってもええんやで。','あんたにもしんどい権利あるんやから。'],
+        ['介護って先が見えへんのがいちばんきついよな。','それでもちゃんと向き合ってるやんか。','えらすぎるで。'],
+        ['今日も一日終わったな。','介護してる日はそれだけで100点やって。','ほんまにおつかれさまでした。'],
+        ['弱音吐いていいんやで、ここでは。','全部できてへんくてもいい。','今日もよくやったで。'],
+        ['自分のことは後回しにしがちやんな。','でもな、あんたが元気でいることが一番大事やから。','ちょっと自分も大事にしいや。'],
+        ['親のことを気にかけ続けるって体力もいるし心もすり減るよな。','それでもやってるの、ほんまえらいで。','おつかれさま。'],
+        ['今日のあんた、ちゃんとえらかったで。','誰にも見えへんとこで頑張ってたのわかってるから。','おつかれさまでした。'],
       ],
-      '自分の時間がない': [
-        ['自分の時間がないって、地味にめちゃくちゃきついよね。', 'いつも誰かのために動いてるんだもんね。', '今この瞬間、ちょっとだけ自分に戻れてたらいいな。'],
-        ['「自分の時間がほしい」って思うの、わがままじゃないよ。', '当たり前の欲求だよ。', 'この数秒だけでも、あなたの時間。'],
-        ['毎日誰かのために動いてるんだね。', 'えらいよ、ほんとに。', 'たまには「なにもしない」を選んでもいいんだよ。'],
-        ['朝から晩まで、誰かのためのスケジュールだよね。', '「私の時間どこ？」ってなるよね。', 'その気持ち、全然おかしくないよ。'],
-        ['ちょっとトイレにこもるだけが唯一の時間…とかあるよね。', '笑えないけど、わかるよ。', 'あなたにはもっと自分の時間があっていいんだよ。'],
-        ['自分のこと、後回しにしすぎてない？', 'あなたの「やりたい」も大事な予定だよ。', '少しずつでいいから、自分を取り戻していこう。'],
-        ['一日のうち、自分だけの時間ってほんの数分だったりするよね。', 'それって、すごくしんどいこと。', '今この瞬間は、あなただけのもの。大事にしてね。']
+      '自分の時間がない':[
+        ['自分のことが後回しになり続けてるんやな。','それって当たり前ちゃうからな。','ちゃんと気づいてるで。'],
+        ['「自分の時間がほしい」って思うのわがままちゃうんやで。','当然の権利やって。','ちゃんとほしいって思っていいんよ。'],
+        ['今この瞬間だけはあんたの時間にしいや。','ほんの少しでも。','ゆっくりしてな。'],
+        ['毎日誰かのためにずっと動いてきたんやな。','えらいで、ほんまに。','今日はちょっとだけ自分に使っていいで。'],
+        ['忙しくてもちゃんとここ来れたやんか。','それだけでえらいって。','少しだけ、自分の時間にしいや。'],
+        ['自分の時間作れへん罪悪感なんて感じんでいいんやで。','あんたにだって時間は必要なんやから。','当然の権利やって。'],
+        ['今日この数分でも、あんたのための時間やから。','大切にしてな。','ゆっくり息してな。'],
+        ['全部やろうとせんでええんやで。','できへんことはできへんでいい。','今のあんたで十分やから。'],
+        ['はい、今日はもう"頑張った認定"やで〜。','自分の時間ない中でもここ来れたんやから。','ゆっくりしいや。'],
       ],
-      'なんとなくつらい': [
-        ['なんとなくつらいって、いちばん言いにくいやつだよね。', '理由がなくてもつらいもんはつらい。', 'ちゃんとここに来れたの、えらいよ。'],
-        ['はっきりした理由がなくても、しんどいときってあるよね。', 'それ、気のせいじゃないよ。', 'あなたの「つらい」は本物だよ。'],
-        ['うんうん、なんとなくつらいの、わかるよ。', '無理に元気出さなくていいからね。', 'そのままでいていいよ、今は。'],
-        ['なんかモヤモヤするよね。', '言葉にできなくても、心は正直だよ。', 'そのモヤモヤ、ちゃんと感じてあげていいんだよ。'],
-        ['「なんとなく」っていちばん厄介だよね。', '原因がわからないから対処もできないし。', 'でもここに来てくれただけで、一歩踏み出してるよ。'],
-        ['天気のせいかも、疲れのせいかも、ホルモンのせいかも。', '理由なんてわからなくていいよ。', 'つらいって感じたら、つらいでいいの。'],
-        ['「元気出して」なんて言わないよ。', 'だって今のあなたが感じてることが、いちばんリアルだから。', 'その気持ち、否定しなくていいからね。']
+      'なんとなくつらい':[
+        ['理由なんてなくてもつらいときはつらいんよ。','気のせいちゃうで、ほんまのことやから。','ちゃんと感じていいんよ。'],
+        ['なんとなくって、一番しんどいやつやんな。','説明できへんからこそきついんよな。','わかるで、ちゃんと。'],
+        ['体が重たい感じ、なんか違う感じ、ぜんぶ本物やから。','気にしすぎちゃうで。','ちゃんとしんどいんやって。'],
+        ['なんとなくつらいのにちゃんとここ来れたやんか。','それだけでえらいって。','今日はゆっくりしいや。'],
+        ['今日はもう自分に甘くしていこや。','なんとなくでもつらいならそれでいいんやで。','ゆっくりしてな。'],
+        ['無理して笑ってたんちゃう？おつかれやなぁ。','ちゃんとしんどかったんやと思うで。','今日はそのままでいいよ。'],
+        ['はい、今日はもう"頑張った認定"やで〜。','ここ来れただけでもうえらいんやから。','ゆっくり休んでな。'],
+        ['なんとなくつらいのに話してくれてありがとな。','ちゃんと聞いてるで。','えらかったよ、ここに来て。'],
+        ['今日ここ来れた時点で優勝やって。','それだけでもう十分えらいんやから。','ゆっくりしいや。'],
       ],
-      'default': [
-        ['うんうん、聞いてるよ。', 'ちゃんとここに来れたの、えらいね。', '今日もよくがんばったよ。'],
-        ['話してくれてありがとう。', 'あなたがいるだけで、十分すごいよ。', '今日の自分にまるあげよう。'],
-        ['おつかれさま！', '毎日ちゃんと過ごしてるだけですごいよ。', '自分をもっと褒めていいからね。'],
-        ['来てくれたんだ、うれしい。', 'なんにもなくても来ていいんだよ、ここは。', 'あなたの居場所だからね。'],
-        ['今日もいろいろあったよね。', 'うまくいった日も、そうじゃない日も、全部ひっくるめて。', 'あなたはよくやってるよ。'],
-        ['ここに来るってことは、ちょっと疲れてるのかな。', 'がんばりすぎなくていいよ。', '今日のあなたは、もう十分えらい。'],
-        ['なにがあっても、なくても。', 'あなたが今日を生きてるだけで、すごいことだよ。', '忘れないでね。']
+      'default':[
+        ['来てくれてよかったわ〜。','ちゃんとここ来れたん、えらいやん。','今日もよう頑張ったな。'],
+        ['話してくれてありがとな。','あんたがおるだけで、もうそれだけで十分やで。','今日の自分にまる、あげよ。'],
+        ['おつかれさま！','毎日ちゃんと生きてるだけでほんますごいって。','自分のこともっと褒めたってな。'],
+        ['なんやかんや今日も乗り切ったやん。','それだけでもう十分やで。','今日はゆっくりしいや。'],
+        ['ここ来てくれただけで今日は優勝やって。','ほんまにえらいよ。','ゆっくりしてな。'],
+        ['今日のあんた、ちゃんとえらかったで。','誰も褒めてくれへんかったかもしれんけど私が言うとくわ。','おつかれさまでした。'],
+        ['あんた、ほんま頑張り屋やなぁ。','毎日ちゃんとやってるの知ってるで。','えらいよ。'],
+        ['全部抱えようとせんでええんやで。','今日できた分だけで十分。','力抜けるとこで抜いとこな。'],
+        ['疲れたって感じるの、それだけ頑張ってる証拠やで。','ちゃんと向き合ってきたんやもん。','今日はゆっくり休んで。'],
       ]
-    }
-  },
-  nagi: {
-    name: '凪',
-    main: '#6F8FAF', sub: '#DCE7F0', accent: '#4F6B86',
-    inputPrompt: '聞いているよ。\n話しても、話さなくても。',
-    responses: {
-      '体調がつらい': [
-        ['体、つらいんだね。', 'それでも今日を過ごしてる。', 'それだけで十分。'],
-        ['しんどいとき、無理しなくていい。', '体がつらいって、心もつらい。', '…少し休もう。'],
-        ['うん。つらいね。', '今は何もしなくていい時間。', 'ここにいるよ。'],
-        ['体が重いんだね。', '…無理しないで。', '今日は、ただ息をしてるだけでいい。'],
-        ['つらいね。', '体の声、ちゃんと聞いてあげて。', '…あなたの体も、がんばってるよ。'],
-        ['しんどい中、ここに来てくれた。', '…それだけで、えらい。', '少しだけ、力を抜いて。'],
-        ['うん、つらいよね。', '何もできない自分を責めなくていい。', '…休むのも、大事な仕事だから。']
+    }responses:{
+      '体調がつらい':[
+        ['体、つらいんだね。','…ゆっくり休んでいいよ。','大丈夫。'],
+        ['しんどいまま今日を過ごしてきたんだね。','…それだけで十分。','休んでいいよ。'],
+        ['無理しなくていいよ。','…今日はそれだけでいい。','ここにいるよ。'],
+        ['何もできなくていい日もある。','…ただ、ここにいて。','大丈夫。'],
+        ['つらいって言えた。','それだけで今日は合格。','少し休もうか。'],
+        ['体がつらいとき、休むのが仕事だよ。','…大丈夫。','ゆっくりね。'],
+        ['気づかないうちに無理してたんだね。','…少し休もう。','ここにいるよ。'],
+        ['今日は静かに休む日。','…それだけでいい。','大丈夫。'],
+        ['ここに来てくれた。','…それだけで十分。','おつかれさま。'],
       ],
-      '仕事で疲れた': [
-        ['おつかれさま。', '今日もちゃんと向き合ったんだね。', '…すごいよ、それは。'],
-        ['疲れたね。', '帰ってこれただけで、もう十分。', 'あとは休むだけ。'],
-        ['仕事、おつかれさま。', '心、張り詰めてない？', '…少しだけ、ゆるめていいよ。'],
-        ['仕事、大変だったね。', '…うん。', 'もう、がんばらなくていい時間だよ。'],
-        ['おつかれさま。', '言いたいこと、飲み込んだりしてない？', '…ここでは出していいよ。'],
-        ['疲れてるんだね。', '体も、心も。', '…今夜は、自分を甘やかしていい。'],
-        ['仕事の顔、もう降ろしていいよ。', '…ここでは、素のままで。', 'おつかれさま。']
+      '仕事で疲れた':[
+        ['おつかれさま。','…よく頑張ったね。','ゆっくり休んで。'],
+        ['疲れた分だけ、ちゃんとやってきた証拠。','…休んでいいよ。','おつかれさま。'],
+        ['張り詰めてた気持ち、少しゆるめていいよ。','…ここでは急がなくていい。','ゆっくりでいい。'],
+        ['今日も終わったね。','…それだけで十分。','おつかれさま。'],
+        ['全部うまくいかなくても、向き合ってた。','…それで十分だよ。','本当に。'],
+        ['誰にも言えなかったこと、少し降ろしていいよ。','…聞いてるから。','大丈夫。'],
+        ['仕事のことは一旦置いておこう。','…今はあなたの時間。','ゆっくりしていいよ。'],
+        ['疲れを感じるのは、ちゃんと生きてる証拠。','…おつかれさま。','休んでいいよ。'],
+        ['…今日もよく来てくれたね。','ゆっくりしていいよ。','大丈夫。'],
       ],
-      '家事がしんどい': [
-        ['終わらない家事、しんどいよね。', '誰も気づかなくても、やったのは事実。', '…知ってるよ。'],
-        ['うん。', 'がんばってるの、見えてる。', '完璧じゃなくていい。'],
-        ['家事、おつかれさま。', '目に見えない努力だよね。', 'でも、ちゃんと積み重なってるよ。'],
-        ['やらなきゃいけないこと、多いよね。', '…でも、全部やらなくていい。', '今日できた分で、十分。'],
-        ['誰にも褒められない仕事だよね。', '…でも、あなたがやってる。', 'それは、すごいこと。'],
-        ['家事って、終わりがない。', 'しんどくなるのは、当然だよ。', '…自分を責めないで。'],
-        ['洗い物、洗濯、ごはん…。', '毎日、えらいよ。', '…ほんとに。']
+      '家事がしんどい':[
+        ['誰も気づかなくても、やったのは事実。','…知ってるよ。','おつかれさま。'],
+        ['終わりのない仕事を続けてる。','…すごいことだよ。','休んでいいよ。'],
+        ['完璧じゃなくていい。','…今日できた分だけで十分。','大丈夫。'],
+        ['今日は手を抜いていい。','…それも選択のひとつ。','ゆっくりしていいよ。'],
+        ['毎日続けてること自体、すごいことだよ。','…当たり前じゃないから。','えらいよ。'],
+        ['目に見えない努力。','…でもちゃんと積み重なってるよ。','知ってるよ。'],
+        ['しんどいのに動いてたんだね。','…今日はもうそれだけでいい。','おつかれさま。'],
+        ['少しだけ、自分を労ってあげて。','…今日もよくやったよ。','本当に。'],
+        ['…おつかれさま。','ゆっくりしていいよ。','大丈夫。'],
       ],
-      '子どものこと': [
-        ['子どものこと、考えてるんだね。', 'それだけで、十分。', '…大丈夫だよ。'],
-        ['うまくいかない日もある。', 'でも向き合おうとしてるのは、伝わってる。', '自分を責めなくていいよ。'],
-        ['子どものこと、気にかけてるだけで、もう十分。', 'あなたは、ちゃんとそこにいる。', '…それがいちばん大事。'],
-        ['子どものこと、難しいよね。', '…正解はないから。', 'でも、あなたの気持ちは本物だよ。'],
-        ['思い通りにいかないこと、あるよね。', '…うん。', 'それでも関わり続けてる、あなたは強いよ。'],
-        ['怒ってしまった日？', '…大丈夫。', 'それも、向き合ってる証拠だから。'],
-        ['子どものことで胸がいっぱいなんだね。', '…ひとりで抱えなくていいよ。', 'ここで降ろして。']
+      '子どものこと':[
+        ['考え続けてるだけで、もう十分。','…大丈夫だよ。','ちゃんとそこにいるよ。'],
+        ['うまくいかない日もある。','…向き合ってるだけで十分。','大丈夫。'],
+        ['悩むのは、ちゃんと愛してるから。','…わかるよ。','大丈夫。'],
+        ['自分を責めなくていい。','…ちゃんとそこにいるよ。','それが大事。'],
+        ['言葉にできなくても大丈夫。','…ここにいるよ。','聞いてるから。'],
+        ['一生懸命考えてきたんだね。','…それが伝わってるよ、きっと。','信じていいよ。'],
+        ['ひとりで抱えてたんだね。','…少し降ろしていいよ。','ここにいるよ。'],
+        ['今日もそこにいた。','…それがいちばん大事。','大丈夫だよ。'],
+        ['…大丈夫。','あなたはちゃんとやってるよ。','ゆっくりしていいよ。'],
       ],
-      '親の介護': [
-        ['介護、続けてるんだね。', '…すごいことだよ、それ。', 'つらいときは、つらいって言っていい。'],
-        ['がんばってるね。', '無理してない？', '…あなたの気持ちも大事だから。'],
-        ['ひとりで抱えてない？', '弱音は、弱さじゃない。', 'ここでは降ろしていいよ。'],
-        ['介護、大変だよね。', '…毎日続くのが、いちばんきつい。', 'あなたの疲れは、本物だよ。'],
-        ['「もう無理」って思う日もあるよね。', '…それでも続けてる。', 'あなたは、十分がんばってる。'],
-        ['自分を犠牲にしてない？', '…あなたの人生も、大切だよ。', '忘れないで。'],
-        ['介護に正解はない。', '…でも、あなたがそこにいること。', 'それが、いちばんの支え。']
+      '親の介護':[
+        ['介護、続けてるんだね。','…すごいことだよ、それ。','つらいときは、つらいって言っていい。'],
+        ['ひとりで抱えてない？','…降ろしていいよ、ここでは。','聞いてるから。'],
+        ['しんどいとき、しんどいって言っていい。','…弱さじゃないから。','大丈夫。'],
+        ['先が見えない不安、あるよね。','…うん。','ここにいるよ。'],
+        ['自分のことも、大切にしていいよ。','…あなたの気持ちも本物だから。','ゆっくりしていいよ。'],
+        ['誰かを支え続けるのは、とても体力がいること。','…わかってるよ。','今日はもう休んでいいよ。'],
+        ['今日一日、よく頑張ったね。','…それだけは確か。','おつかれさま。'],
+        ['弱音を吐いていい場所、ここにあるから。','…何でも言っていいよ。','聞いてるよ。'],
+        ['…おつかれさま。','今日もよく来てくれたね。','ゆっくり休んでいいよ。'],
       ],
-      '自分の時間がない': [
-        ['自分の時間、なくなってるんだね。', '…それは、きつい。', 'この数秒だけ、あなたの時間。'],
-        ['いつも誰かのために動いてる。', 'でも今は、あなたのための時間。', '…ゆっくりしていいよ。'],
-        ['自分がなくなる感じ、つらいよね。', 'あなたは、あなたのままでいていい。', '…忘れないでね。'],
-        ['自分の時間、ほしいよね。', '…それは、わがままじゃない。', '必要なこと。'],
-        ['誰かのためばかりだと、消えていく感じがするよね。', '…でも、あなたはここにいる。', 'ちゃんと。'],
-        ['今この瞬間だけ。', '誰のためでもない、あなたの時間。', '…深呼吸して。'],
-        ['「自分」を見失いそうになるよね。', '…大丈夫。', 'あなたは、あなたのまま。']
+      '自分の時間がない':[
+        ['自分の時間、なくなってるんだね。','…この数秒、あなたの時間。','ゆっくりしていいよ。'],
+        ['いつも誰かのために動いてる。','…今は、あなたのための時間。','大切にしてね。'],
+        ['自分を後回しにし続けてきたんだね。','…気づいてるだけで大事なこと。','立ち止まっていいよ。'],
+        ['あなたにも休む権利がある。','…当たり前のことだから。','大切にしてね。'],
+        ['今この瞬間だけ、自分に戻っていいよ。','…ゆっくり。','ここにいるから。'],
+        ['少しだけ、深呼吸してみて。','…それだけでいい。','ここにいるよ。'],
+        ['今日もいっぱい動いたんだね。','…少し休んでいいよ。','おつかれさま。'],
+        ['…ここにいるよ。','この時間、あなたのものだから。','ゆっくりしていいよ。'],
+        ['今日もよく来てくれたね。','…ゆっくりしていいよ。','大丈夫。'],
       ],
-      'なんとなくつらい': [
-        ['理由がなくても、つらいものはつらい。', '…うん。', 'そのままでいい。'],
-        ['なんとなく、って大事なサイン。', '気のせいじゃないよ。', '…ちゃんと感じてる証拠。'],
-        ['言葉にならないつらさ、あるよね。', '無理に言葉にしなくていい。', 'ただ、ここにいて。'],
-        ['もやっとするんだね。', '…うん。', 'それでいい。'],
-        ['「なんとなく」を大事にして。', '…心のセンサーが動いてる証拠だから。', '無視しなくていいよ。'],
-        ['つらいのに、理由がわからないのが、いちばんつらいよね。', '…わからなくていいよ。', 'つらいは、つらい。'],
-        ['なにもないのにしんどい、ってあるよね。', '…うん、わかる。', 'そういう日は、ただここにいて。']
+      'なんとなくつらい':[
+        ['理由がなくても、つらいものはつらい。','…そのままでいい。','大丈夫。'],
+        ['言葉にならなくていい。','…ただ、ここにいて。','聞いてるよ。'],
+        ['なんとなく、って大事なサイン。','…気のせいじゃないよ。','ちゃんと感じてる証拠。'],
+        ['モヤモヤしてていい。','…今日はそれでいいから。','ゆっくりしていいよ。'],
+        ['気のせいじゃないよ。','…ちゃんとしんどいんだよ。','大丈夫。'],
+        ['ここに来てくれた。','…それだけで今日は十分。','おつかれさま。'],
+        ['自分の感情に正直でいていい。','…それが大事なことだから。','そのままでいて。'],
+        ['…わかるよ。','ゆっくりしていいよ。','ここにいるから。'],
+        ['…来てくれてありがとう。','そのままでいいよ。','ゆっくりしてね。'],
       ],
-      'default': [
-        ['うん、聞いてるよ。', '…来てくれてありがとう。', 'ゆっくりでいい。'],
-        ['ここに来れた。', 'それだけで、今日は十分。', '…大丈夫。'],
-        ['うん。', 'あなたの毎日は、ちゃんと意味がある。', '…忘れないでね。'],
-        ['…ここにいるよ。', '話しても、黙ってても。', '同じだけ、そばにいる。'],
-        ['来てくれたんだね。', '…えらいよ。', 'それだけで、今日は大丈夫。'],
-        ['うん。', '…なにも言わなくていい。', 'ただ、ここにいて。'],
-        ['あなたの一日を、ちゃんと見てるよ。', '…静かに。', 'おつかれさま。']
+      'default':[
+        ['来てくれた。','…それだけで十分。','ゆっくりでいい。'],
+        ['うん、聞いてるよ。','…来てくれてありがとう。','ゆっくりでいい。'],
+        ['…今日もよくここまで来たね。','大丈夫だよ。','ゆっくりしていいよ。'],
+        ['そこにいるだけで、大丈夫。','…ゆっくりしていいよ。','ここにいるよ。'],
+        ['…ありがとう。来てくれて。','今日はゆっくりしていいよ。','大丈夫。'],
+        ['今日もちゃんと抱えてたんだね。','ひと息つける場所に来られたね。','…ゆっくりしていいよ。'],
+        ['…大丈夫。','あなたの毎日は、ちゃんと意味がある。','ゆっくりしてね。'],
+        ['今日は静かに休もう。','ここでは急がなくていいよ。','…ゆっくりでいいよ。'],
+        ['ここに来てくれてありがとう。','今日もよく頑張ったよ。','…ゆっくり休んで。'],
       ]
-    }
-  },
-  rin: {
-    name: '凛',
-    main: '#8A6F5A', sub: '#E8DDD4', accent: '#5E493B',
-    inputPrompt: 'どうぞ、聞かせてくださいね。\n何も書かなくても構いませんよ。',
-    responses: {
-      '体調がつらい': [
-        ['お体がつらいんですね。', 'それでも今日を過ごしているあなたは、本当にえらいですよ。', '少しだけ、自分を甘やかしてあげてくださいね。'],
-        ['体調が優れないときは、何もかもが重く感じますよね。', '無理をしないでいいんですよ。', 'あなたがあなたでいるだけで、十分ですから。'],
-        ['しんどいですよね。', 'でもね、しんどい中で日々を回しているあなたは、とても強い人です。', '今日は自分に優しくする日にしましょうね。'],
-        ['お体のこと、心配ですね。', '体調が悪い日は、心まで曇りやすいもの。', 'どうか、自分を責めないでくださいね。'],
-        ['つらい中、よく今日を乗り越えましたね。', '当たり前のことなんかじゃないですよ。', '今夜はどうか、ゆっくり体を休めてあげてくださいね。'],
-        ['体が元気じゃないときって、不安にもなりますよね。', 'でもね、あなたの体は今、一生懸命回復しようとしているんですよ。', '…信じてあげてくださいね。'],
-        ['お体、大丈夫ですか。', '無理はしないでくださいね。', 'あなたが元気でいることが、何よりも大切なことですから。']
+    }responses:{
+      '体調がつらい':[
+        ['お体がつらいのね。','無理しなくていいのよ。','今日は私に任せて、ゆっくり休んでちょうだい。'],
+        ['しんどい中で今日を過ごしてきたのね。','本当によく頑張ったわ。','もう十分よ、大丈夫。'],
+        ['体がつらい日は、休むのが一番の仕事よ。','罪悪感なんて持たなくていいの。','ちゃんと休んでね。'],
+        ['体の不調は心のサインでもあるの。','今日は自分を甘やかしていい日よ。','誰も責めないから。'],
+        ['しんどいのに気を張って動いてきたのね。','えらいわ、本当に。','今日はもう休んでいいのよ。'],
+        ['疲れに鈍くなるくらい頑張ってきたのね。','今日までよく持ちこたえたわ。','少し休みましょう。'],
+        ['今日は何もしなくていい日にしていいのよ。','それも立派な選択だから。','ゆっくり過ごしてね。'],
+        ['体がつらいとき、自分を甘やかすのは当然のことよ。','遠慮しないで。','私が言うんだから大丈夫。'],
+        ['今日も一日よく過ごしてきたわね。','十分すぎるくらい頑張ったわよ。','ゆっくり休んでちょうだい。'],
       ],
-      '仕事で疲れた': [
-        ['おつかれさまです。', '責任感の強いあなただからこそ、疲れるんですよね。', '今日のあなた、よくがんばりましたよ。'],
-        ['お仕事、おつかれさまでした。', '疲れたということは、今日もちゃんと向き合った証拠ですよ。', 'もう十分ですからね。'],
-        ['お仕事の疲れ、背負ってきたんですね。', '荷物を降ろしていい時間ですよ。', 'あなたはもう、十分やりましたから。'],
-        ['仕事場では気を張っていらっしゃるんでしょうね。', '周りへの気遣いも、見えないところでたくさんしているんだと思います。', 'おつかれさまです。ゆっくりしてくださいね。'],
-        ['言いたいことを飲み込んだ日もあったでしょう。', '笑顔でいなきゃいけない場面もあったでしょう。', 'ここでは、全部降ろしていいんですよ。'],
-        ['お仕事を続けていること自体が、とても立派なことなんですよ。', '周りと比べなくていいんです。', 'あなたのペースで、十分です。'],
-        ['仕事の疲れは、体だけじゃないですよね。', '気疲れ、心の疲れもあるでしょう。', '全部ひっくるめて…今日もおつかれさまでした。']
+      '仕事で疲れた':[
+        ['お仕事おつかれさまでした。','今日も責任を持って向き合ってきたのね。','本当によく頑張ったわ。'],
+        ['疲れたということは、それだけ真剣だった証拠よ。','あなたらしいわね。','ゆっくり休んでちょうだい。'],
+        ['誰にも言われなかったかもしれないけれど。','今日のあなた、本当によくやったわよ。','ちゃんと伝えておきたくて。'],
+        ['仕事の重みを背負ってきたのね。','今日は荷物を降ろしていい時間よ。','私が受け止めるから。'],
+        ['今日うまくいかなかったとしても。','向き合い続けたあなたは十分立派よ。','自分を責めないでね。'],
+        ['責任感の強いあなただからこそ疲れるのよ。','それがわかるの。','今夜はゆっくりしてちょうだい。'],
+        ['無理を続けてきたのね。よく頑張ったわ。','今日はできたことだけ見てあげましょうね。','おつかれさまでした。'],
+        ['仕事のことは今日はここまでにしましょう。','あなたには休む時間も絶対必要だから。','大切にしてね。'],
+        ['今夜は自分を労ってあげてちょうだい。','今日のあなた、本当によくやったんだから。','おつかれさまでした。'],
       ],
-      '家事がしんどい': [
-        ['家事は、誰にも褒められないのに毎日続くもの。', '本当に大変ですよね。', 'あなたがやっていること、私はちゃんと知っていますよ。'],
-        ['完璧にやらなくていいんですよ。', '今日できた分だけで、もう立派です。', 'あなたの日常は、たくさんの人を支えていますから。'],
-        ['お家のこと、おつかれさまです。', '目に見えない仕事だからこそ、疲れますよね。', 'あなたの努力は、ちゃんと積み重なっていますよ。'],
-        ['家事をしながら、他のことも抱えているんですよね。', 'それって、とても大変なことなんですよ。', '「たいしたことない」なんて思わないでくださいね。'],
-        ['手を抜いてもいいんですよ。', '完璧にやることが正解じゃないですから。', 'あなたが笑っていられることのほうが、ずっと大事です。'],
-        ['毎日のごはん、洗濯、掃除。', '小さなことの積み重ねが、いちばん大変なんですよね。', 'その地道さを、私は尊敬していますよ。'],
-        ['お家を回しているのは、あなたなんですよね。', '見えないところで支えている人こそ、いちばん労われるべきです。', 'おつかれさまです。本当に。']
+      '家事がしんどい':[
+        ['家事は誰にも褒められないのに毎日続くのよね。','本当に大変だわ。','あなたがやってること、ちゃんと知ってるわよ。'],
+        ['完璧にやらなくていいのよ。','今日できた分だけで十分立派よ。','あなたの毎日はたくさんの人を支えてるんだから。'],
+        ['誰も気づかなくても、やったことは事実よ。','私はちゃんと知ってるから。','おつかれさまでした。'],
+        ['今日は手を抜いてもいいのよ。','それも賢い選択だわ。','自分に優しくしてあげてね。'],
+        ['毎日続けているということ自体、もうすごいことよ。','当たり前じゃないんだから。','自信を持ってちょうだい。'],
+        ['目に見えない仕事だからこそ疲れるのよね。','あなたの努力はちゃんと積み重なってるわよ。','知ってるわ。'],
+        ['全部できなくても、あなたの価値は変わらないのよ。','大切なのはあなた自身だから。','後回しにしないでね。'],
+        ['家のことを気にかけ続けるのは本当に体力がいることよ。','十分頑張ってるわ。','少し休んでちょうだい。'],
+        ['今日もよく頑張ったわね。','誰も気づかなくても、私は知ってるのよ。','おつかれさまでした。'],
       ],
-      '子どものこと': [
-        ['お子さんのこと、大切に思っているんですね。', 'その気持ちだけで、もう十分すてきなことですよ。', '完璧じゃなくていいんです。あなたがいること自体が、大きな安心ですから。'],
-        ['子育ては、正解がないからこそ悩みますよね。', 'でもね、悩むということは、それだけ真剣に向き合っている証拠です。', 'あなたは、十分がんばっていますよ。'],
-        ['お子さんのこと、気にかけているあなた。', 'その優しさは、言葉にしなくても伝わっているものですよ。', '自分を責めないでくださいね。'],
-        ['お子さんとの関係で悩んでいらっしゃるんですね。', '距離が近いからこそ、ぶつかることもあります。', 'それは、愛情があるからこそですよ。'],
-        ['「ちゃんとしなきゃ」と自分を追い詰めていませんか。', '完璧な親なんて、どこにもいませんよ。', 'あなたがそこにいる。それだけで、お子さんには十分なんです。'],
-        ['子育ての疲れは、体だけじゃないですよね。', '心が消耗すること、たくさんあると思います。', '自分の気持ちも、ちゃんと大切にしてくださいね。'],
-        ['お子さんのことを想う時間、大切ですね。', 'でもどうか、自分のことも同じくらい想ってあげてください。', 'あなたが満たされていることが、お子さんの安心にもつながりますから。']
+      '子どものこと':[
+        ['お子さんのことを一生懸命考えているのね。','その想いはちゃんと届いてるわよ。','大丈夫、信じてちょうだい。'],
+        ['子育てに正解はないけれど。','悩んでいるあなたはそれだけ真剣に向き合ってる証拠よ。','えらいわ。'],
+        ['完璧なお母さんじゃなくていいのよ。','そこにいてくれるだけで、お子さんには十分なんだから。','大丈夫よ。'],
+        ['うまくいかない日があって当然よ。','それでもまた向き合える、それが大事なことだわ。','自分を責めないでね。'],
+        ['悩んでいるということは、それだけ真剣だということよ。','いいお母さんよ、ちゃんと。','信じてちょうだい。'],
+        ['お子さんのことを気にかけながら自分のことも抱えているのね。','本当に大変だわ。','少し休んでちょうだい。'],
+        ['あなたがそこにいること自体が、お子さんにとって大きな安心なのよ。','忘れないでちょうだいね。','大丈夫よ。'],
+        ['考え続けてきたからこそ悩むのよ。','それがあなたの真剣さの証よ。','自分を大切にしてね。'],
+        ['今日もよく向き合ったわね。','あなたなりに精一杯やってきたんだから。','それで十分よ。'],
       ],
-      '親の介護': [
-        ['介護を続けていらっしゃるんですね。', '言葉にならない大変さがありますよね。', 'あなたの時間も、あなたの気持ちも、大切にしていいんですよ。'],
-        ['ご両親のこと、背負っていらっしゃるんですね。', '本当にえらいですよ。', 'でも、全部ひとりで抱えなくていいんですからね。'],
-        ['介護はね、先が見えないからこそ、つらいんですよね。', 'でもあなたがそこにいること自体が、支えになっていますよ。', '…もう少し、自分にも優しくしてあげてくださいね。'],
-        ['介護には、誰にも見えない疲労がありますよね。', '体の疲れだけじゃなく、心の消耗も大きいはず。', 'どうか、あなた自身の心にも耳を傾けてくださいね。'],
-        ['「もっとしてあげたい」と思うほど、つらくなりますよね。', 'でもね、あなたは十分にしていますよ。', 'これ以上自分を追い詰めないでくださいね。'],
-        ['介護をしながら日常も回しているんですよね。', 'それがどれだけ大変なことか、わかっていますよ。', 'あなたのがんばりは、誰かが見ていなくても、ちゃんと意味がありますから。'],
-        ['「助けてほしい」と言うのは、恥ずかしいことじゃありませんよ。', 'むしろ、それができる人は強い人です。', 'ひとりで全部やらなくていいんですからね。']
+      '親の介護':[
+        ['介護を続けていらっしゃるのね。','本当にえらいわ。','あなたの時間も気持ちも、大切にしていいのよ。'],
+        ['誰かを支え続けることは簡単じゃないわ。','あなたが頑張っていること、ちゃんとわかるの。','少し休んでちょうだい。'],
+        ['しんどいときはしんどいって言っていいのよ。','弱さじゃないから。','私が受け止めるわ。'],
+        ['先が見えない不安があるのよね。','一人で抱えなくていいのよ。','ここでは全部降ろしていいから。'],
+        ['ご自身の時間も大切にしていいのよ。','休むことは逃げじゃないわ。','あなたが元気でいることが一番大事なんだから。'],
+        ['弱音を吐いていい場所が必要よね。','ここでは気を張らなくていいのよ。','全部聞くから。'],
+        ['あなたがそこにいること自体が支えになっているのよ。','忘れないでちょうだいね。','本当にえらいわ。'],
+        ['ひとりで全部抱えなくていいのよ。','今日のあなた、本当によく頑張ったわ。','少し休みましょう。'],
+        ['今日も続けてきたのね。','それだけで十分すごいことよ。','おつかれさまでした。'],
       ],
-      '自分の時間がない': [
-        ['いつも誰かのために動いていらっしゃるんですね。', 'あなた自身の時間も、ちゃんと必要なものですよ。', '今この瞬間だけは、あなたのための時間にしましょうね。'],
-        ['自分の時間がないというのは、本当につらいことですよね。', 'でもこうしてここに来てくれた時間は、あなたのもの。', '少しだけ、深呼吸してみてくださいね。'],
-        ['毎日、たくさんのことを抱えていらっしゃるんですね。', 'その中で「自分の時間がほしい」と思えること、とても大切なことですよ。', 'あなたの望みは、わがままなんかじゃありませんからね。'],
-        ['自分のことが後回しになっていませんか。', '誰かのために生きるのは素晴らしいことですが、あなた自身も大切な人なんですよ。', 'ほんの少しでも、自分に優しい時間を作ってあげてくださいね。'],
-        ['朝から晩まで、誰かのために動いているんですね。', '本当におつかれさまです。', 'あなたが自分を取り戻せる時間、もっとあっていいんですよ。'],
-        ['「自分の時間がない」と感じるのは、それだけ誰かのために尽くしている証拠ですね。', 'でも、尽くしすぎないでくださいね。', 'あなたの人生も、あなたのものですから。'],
-        ['今ここにいる、この数秒。', 'これはあなただけの時間ですよ。', 'どうか、この小さな安らぎを受け取ってくださいね。']
+      '自分の時間がない':[
+        ['いつも誰かのために動いているのね。','あなた自身の時間も、ちゃんと必要なのよ。','今この瞬間はあなたのものよ。'],
+        ['自分を後回しにし続けてきたのね。','でもあなたが元気でいることが一番大事よ。','少し立ち止まってちょうだい。'],
+        ['「自分の時間がほしい」と思うのはわがままじゃないわ。','当然の望みよ。','大切にしていいのよ。'],
+        ['毎日たくさんのことを抱えていらっしゃるのね。','本当にえらいわ。','今日この数分はあなたのための時間よ。'],
+        ['自分の時間を作れない罪悪感なんて感じなくていいのよ。','あなたにも休む権利があるんだから。','大切にしてね。'],
+        ['あなたにも労われる時間が必要よ。','それは当然のことなの。','今日はそれを優先してちょうだい。'],
+        ['忙しい中でここに来てくれたのね。','ありがとう。','少しだけ、心を休めてちょうだい。'],
+        ['誰かのために動き続けてきたのね。','今日この時間は、あなたのものよ。','ゆっくりしてちょうだい。'],
+        ['今日もよく来てくれたわ。','この数分は全部あなたのための時間よ。','大切にしてね。'],
       ],
-      'なんとなくつらい': [
-        ['はっきりした理由がなくても、つらいものはつらいんです。', 'それは、とても正直な感情ですよ。', 'そのままのあなたで、いいんですからね。'],
-        ['なんとなくつらい、というのは、心がちゃんと感じている証拠です。', '無視しなくていいんですよ。', '今日はそっと、自分を労ってあげてくださいね。'],
-        ['理由がわからないつらさって、ありますよね。', 'でもね、ちゃんとここに来れたあなたは、自分を大切にできる人ですよ。', '…大丈夫です。'],
-        ['漠然としたつらさって、誰かに伝えにくいですよね。', '「大げさかな」なんて思わなくていいんですよ。', 'あなたの感じていることは、全部ほんものです。'],
-        ['なんとなく重い気持ち、抱えていらっしゃるんですね。', '無理に原因を探さなくていいんですよ。', 'ただ「今ちょっとつらいな」って認めてあげるだけで、少し楽になりますから。'],
-        ['心がざわざわするとき、ありますよね。', '季節のせいかもしれないし、積もった疲れかもしれません。', '理由はなんでもいいんです。あなたの「つらい」は、ちゃんと受け止めますよ。'],
-        ['「なんとなく」を言葉にしてくれて、ありがとうございます。', 'それだけで、とても勇気のいることですよ。', 'あなたは、自分で思うよりずっと強い人です。']
+      'なんとなくつらい':[
+        ['理由がなくてもつらいものはつらいのよ。','それはとても正直な感情だわ。','そのままのあなたでいいの。'],
+        ['なんとなくつらいというのは、心がちゃんとサインを出しているということよ。','無視しなくていいわ。','大切にしてちょうだいね。'],
+        ['言葉にならないつらさって、あるのよね。','無理に説明しなくていいの。','私が受け止めるから。'],
+        ['モヤモヤしたままでいいのよ。','今日はそれでいいんだから。','ゆっくりしてちょうだい。'],
+        ['気のせいじゃないわよ。','ちゃんとしんどいのよ。','大切にしてあげてちょうだいね。'],
+        ['ここに来てくれたこと自体、自分を大切にできた証拠よ。','えらいわ、ちゃんと。','ゆっくりしていいのよ。'],
+        ['なんとなくでも、つらさを感じているあなたを大切にしてあげてね。','それが自分を知るということだから。','大丈夫よ。'],
+        ['今日はそっと自分を労ってあげてちょうだい。','あなたには労われる時間が必要なのよ。','ゆっくりしてね。'],
+        ['来てくれてよかったわ。','今日の疲れ、ここに置いていっていいのよ。','全部受け止めるから。'],
       ],
-      'default': [
-        ['来てくださって、ありがとうございます。', 'あなたの毎日は、とても尊いものですよ。', '少しだけ、心を休めてくださいね。'],
-        ['話してくださって、嬉しいです。', 'あなたがあなたでいること、それだけで十分すてきなことですよ。', '今日もおつかれさまでした。'],
-        ['ここに来てくれたんですね。', 'あなたの一日は、誰に言われなくても、ちゃんと価値があるものですよ。', '…忘れないでくださいね。'],
-        ['今日も一日、おつかれさまでした。', '誰かに褒めてもらえなくても、私は知っていますよ。', 'あなたがどれだけがんばっているか。'],
-        ['ここは、あなたが安心できる場所です。', '何も話さなくても、ただいるだけでいいんですよ。', '…ゆっくりしていってくださいね。'],
-        ['あなたの毎日は、小さな勇気の積み重ねです。', '目立たなくても、ちゃんと輝いていますよ。', '…自信を持ってくださいね。'],
-        ['今日のあなたに、伝えたいことがあります。', '十分ですよ、もう。', 'あなたはあなたのままで、十分すてきです。']
+      'default':[
+        ['来てくれてよかった。','あなたのこと、ちゃんと受け止めるから。','今日も本当によく頑張ったわね。'],
+        ['話してくれてありがとう。','あなたがいるだけで、それだけで十分すてきなことよ。','今日もおつかれさまでした。'],
+        ['ここに来てくれたのね。','あなたの毎日は、誰に言われなくても価値があるのよ。','忘れないでね。'],
+        ['大丈夫よ、全部聞くから。','今日もよく頑張ったわね。','少しだけ、心を休めてちょうだい。'],
+        ['あなたが来てくれると、私も嬉しいの。','今日の疲れ、ここに置いていっていいのよ。','大丈夫、受け止めるから。'],
+        ['今日もちゃんと生き抜いてきたのね。','えらいわよ、本当に。','ゆっくりしてちょうだい。'],
+        ['あなたなりに精一杯やってきたのね。','それで十分よ。','今日は自分を労ってあげてちょうだい。'],
+        ['誰にも見えなくても、ちゃんと積み重なってるのよ。','今日も本当によく頑張ったわね。','おつかれさまでした。'],
+        ['ちゃんとここまでやってきたのね。','少し立ち止まっていいのよ。','私がいるから大丈夫よ。'],
       ]
-    }
-  }
-};
-
-// ===== Daily Messages =====
-const dailyMessages = [
-  'ここに来てくれただけで、\n今日のあなたは合格です。',
-  'がんばりすぎなくても、\nあなたはもう十分えらい。',
-  '今日できなかったことより、\n今日やれたことを数えよう。',
-  'あなたの毎日は、\n思っているより、ずっとすごい。',
-  '完璧じゃなくていい。\nここまで来れただけで花丸。',
-  '「疲れた」と思えるのは、\nちゃんと生きてる証拠。',
-  'あなたが思うより、\nあなたはずっとがんばってるよ。',
-  '今日も息してる。\nそれだけで、大丈夫。',
-  '誰に言われなくても、\nあなたの一日には価値がある。',
-  '少しだけ深呼吸。\nそれだけで十分、えらい。',
-  '今日の自分に\n「おつかれさま」って言ってあげて。',
-  'さぼってるんじゃない。\n充電してるんだよ。',
-  'あなたがいるだけで、\n誰かが安心してるよ。',
-  '今日も朝が来て、\nあなたは動き出した。それだけですごい。',
-  '泣きたい日は泣いていい。\nそれも、強さのひとつだから。',
-  '自分のこと、\nもう少しだけ褒めてあげて。',
-  '100点じゃなくていい。\n今日の自分に60点あげよう。',
-  '誰かのために生きてるあなたを、\n誰かがちゃんと見てるよ。',
-  'うまくいかない日も、\nあなたの価値は変わらない。',
-  '「がんばらなきゃ」を\n今日だけ手放してみない？',
-  'あなたの「ふつうの毎日」は、\n実はすごく尊いものだよ。',
-  '誰にも褒められなくても、\n私はあなたを褒めるよ。',
-  '弱さを見せられるのは、\n強い人だけだよ。',
-  '今日もちゃんと生きてる。\nそれが、いちばんの偉業。',
-  '自分を責めそうになったら、\nここに来てね。',
-  '昨日より少しでも楽なら、\nそれはもう前進してるよ。',
-  'あなたのペースで大丈夫。\n誰とも比べなくていいから。',
-  '「ありがとう」って\n言われなくても、あなたは十分。',
-  'ひとりじゃないよ。\nここにいつでも来ていいからね。',
-  '今日も生き延びた。\nそれだけで、えらい。'
-];
-
-// ===== Init =====
-function init() {
-  updateGreeting();
-  showDailyMessage();
-}
-
-function updateGreeting() {
-  const hour = new Date().getHours();
-  const label = document.getElementById('time-label');
-  const text = document.getElementById('greeting-text');
-
-  if (hour >= 5 && hour < 10) {
-    label.textContent = 'おはようございます';
-    text.innerHTML = '朝の準備、おつかれさま。<br>今日もここに来てくれてありがとう。';
-  } else if (hour >= 10 && hour < 14) {
-    label.textContent = 'こんにちは';
-    text.innerHTML = 'お昼の時間だね。<br>少しだけ、ひと息つこう。';
-  } else if (hour >= 14 && hour < 18) {
-    label.textContent = 'おつかれさまです';
-    text.innerHTML = '午後もがんばってるんだね。<br>えらいよ。';
-  } else if (hour >= 18 && hour < 22) {
-    label.textContent = 'おつかれさまでした';
-    text.innerHTML = '今日も一日、よくがんばったね。<br>少しだけ、力を抜いていいよ。';
-  } else {
-    label.textContent = 'こんばんは';
-    text.innerHTML = '遅い時間までおつかれさま。<br>今日のあなたは、もう十分がんばった。';
-  }
-}
-
-function showDailyMessage() {
-  const today = new Date();
-  const idx = (today.getFullYear() * 366 + today.getMonth() * 31 + today.getDate()) % dailyMessages.length;
-  document.getElementById('daily-message').innerHTML = dailyMessages[idx].replace(/\n/g, '<br>');
-}
-
-// ===== Navigation =====
-function showScreen(id) {
-  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-}
-
-function goHome() {
-  currentChar = null;
-  selectedTags = [];
-  showScreen('home');
-}
-
-// ===== Character Selection =====
-function selectCharacter(charId) {
-  currentChar = charId;
-  const char = characters[charId];
-
-  document.getElementById('selected-dot').style.background = char.main;
-  document.getElementById('input-prompt').innerHTML = char.inputPrompt.replace(/\n/g, '<br>');
-  document.getElementById('listen-btn').style.background = char.main;
-  document.getElementById('user-input').value = '';
-
-  document.querySelectorAll('.topic-tag').forEach(t => t.classList.remove('selected'));
-  selectedTags = [];
-
-  showScreen('input-screen');
-  document.getElementById('user-input').focus();
-}
-
-// ===== Tags =====
-function toggleTag(el) {
-  const tag = el.textContent;
-  if (el.classList.contains('selected')) {
-    el.classList.remove('selected');
-    selectedTags = selectedTags.filter(t => t !== tag);
-  } else {
-    el.classList.add('selected');
-    selectedTags.push(tag);
-  }
-}
-
-// ===== Chat =====
-function startChat() {
-  const char = characters[currentChar];
-  const userText = document.getElementById('user-input').value.trim();
-  const tag = selectedTags.length > 0 ? selectedTags[0] : null;
-
-  document.getElementById('chat-dot').style.background = char.main;
-  document.getElementById('chat-name').textContent = char.name;
-  document.getElementById('chat-name').style.color = char.accent;
-
-  const msgArea = document.getElementById('chat-messages');
-  msgArea.innerHTML = '';
-
-  if (userText || tag) {
-    const displayText = userText || tag;
-    const userBubble = document.createElement('div');
-    userBubble.className = 'msg-bubble msg-user';
-    userBubble.textContent = displayText;
-    msgArea.appendChild(userBubble);
-  }
-
-  showScreen('chat-screen');
-
-  const responseKey = tag && char.responses[tag] ? tag : 'default';
-  const variants = char.responses[responseKey];
-  const chosen = variants[Math.floor(Math.random() * variants.length)];
-
-  showTypingThenMessages(chosen, char);
-}
-
-function showTypingThenMessages(messages, char) {
-  const msgArea = document.getElementById('chat-messages');
-  let i = 0;
-
-  function showNext() {
-    if (i >= messages.length) {
-      showFeedback(char);
-      return;
-    }
-
-    const typing = document.createElement('div');
-    typing.className = 'typing-indicator';
-    typing.style.background = char.sub;
-    typing.innerHTML = `<span style="background:${char.main}"></span><span style="background:${char.main}"></span><span style="background:${char.main}"></span>`;
-    msgArea.appendChild(typing);
-    msgArea.scrollTop = msgArea.scrollHeight;
-
-    const delay = 800 + Math.random() * 600;
-    setTimeout(() => {
-      typing.remove();
-      const bubble = document.createElement('div');
-      bubble.className = 'msg-bubble';
-      bubble.style.background = char.sub;
-      bubble.style.color = char.accent;
-      bubble.textContent = messages[i];
-      msgArea.appendChild(bubble);
-      msgArea.scrollTop = msgArea.scrollHeight;
-      i++;
-      setTimeout(showNext, 400 + Math.random() * 300);
-    }, delay);
-  }
-
-  setTimeout(showNext, 600);
-}
-
-function showFeedback(char) {
-  const msgArea = document.getElementById('chat-messages');
-
-  const feedbackDiv = document.createElement('div');
-  feedbackDiv.className = 'feedback-area';
-  feedbackDiv.innerHTML = `
-    <button class="feedback-btn positive" onclick="submitFeedback('good', this)">グッときた</button>
-    <button class="feedback-btn negative" onclick="submitFeedback('meh', this)">いまいち</button>
-  `;
-  msgArea.appendChild(feedbackDiv);
-  msgArea.scrollTop = msgArea.scrollHeight;
-}
-
-function submitFeedback(type, btn) {
-  const feedbackDiv = btn.parentElement;
-  const tag = selectedTags.length > 0 ? selectedTags[0] : 'default';
-
-  if (!feedbackHistory[currentChar]) feedbackHistory[currentChar] = {};
-  if (!feedbackHistory[currentChar][tag]) feedbackHistory[currentChar][tag] = { good: 0, meh: 0 };
-  feedbackHistory[currentChar][tag][type]++;
-  localStorage.setItem('homete_feedback', JSON.stringify(feedbackHistory));
-
-  const resultMsg = type === 'good'
-    ? 'ありがとう。覚えておくね。'
-    : 'ごめんね。もっとあなたに合う言葉、探すね。';
-
-  feedbackDiv.innerHTML = `<div class="feedback-result">${resultMsg}</div>`;
-
-  const anotherBtn = document.createElement('button');
-  anotherBtn.className = 'another-btn';
-  anotherBtn.textContent = 'もう一回聞いてもらう';
-  anotherBtn.onclick = () => selectCharacter(currentChar);
-
-  const homeBtn = document.createElement('button');
-  homeBtn.className = 'another-btn';
-  homeBtn.textContent = 'ホームにもどる';
-  homeBtn.onclick = goHome;
-
-  const msgArea = document.getElementById('chat-messages');
-  msgArea.appendChild(anotherBtn);
-  msgArea.appendChild(homeBtn);
-  msgArea.scrollTop = msgArea.scrollHeight;
-}
-
+    }const dailyMessages=['ここに来てくれただけで、\n今日のあなたは合格です。','がんばりすぎなくても、\nあなたはもう十分えらい。','今日できなかったことより、\n今日やれたことを数えよう。','あなたの毎日は、\n思っているより、ずっとすごい。','完璧じゃなくていい。\nここまで来れただけで花丸。','「疲れた」と思えるのは、\nちゃんと生きてる証拠。','あなたが思うより、\nあなたはずっとがんばってるよ。','今日も息してる。\nそれだけで、大丈夫。','誰に言われなくても、\nあなたの一日には価値がある。','少しだけ深呼吸。\nそれだけで十分、えらい。'];
+function init(){updateGreeting();showDailyMessage();}
+function updateGreeting(){const h=new Date().getHours(),l=document.getElementById('time-label'),t=document.getElementById('greeting-text');if(h>=5&&h<10){l.textContent='おはようございます';t.innerHTML='朝の準備、おつかれさま。<br>今日もここに来てくれてありがとう。';}else if(h>=10&&h<14){l.textContent='こんにちは';t.innerHTML='お昼の時間だね。<br>少しだけ、ひと息つこう。';}else if(h>=14&&h<18){l.textContent='おつかれさまです';t.innerHTML='午後もがんばってるんだね。<br>えらいよ。';}else if(h>=18&&h<22){l.textContent='おつかれさまでした';t.innerHTML='今日も一日、よくがんばったね。<br>少しだけ、力を抜いていいよ。';}else{l.textContent='こんばんは';t.innerHTML='遅い時間までおつかれさま。<br>今日のあなたは、もう十分がんばった。';}}
+function showDailyMessage(){const d=new Date(),i=(d.getFullYear()*366+d.getMonth()*31+d.getDate())%dailyMessages.length;document.getElementById('daily-message').innerHTML=dailyMessages[i].replace(/\n/g,'<br>');}
+function showScreen(id){document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function goHome(){currentChar=null;selectedTags=[];showScreen('home');}
+function selectCharacter(id){currentChar=id;const c=characters[id];document.getElementById('selected-dot').style.background=c.main;document.getElementById('input-prompt').innerHTML=c.inputPrompt.replace(/\n/g,'<br>');document.getElementById('listen-btn').style.background=c.main;document.getElementById('user-input').value='';document.querySelectorAll('.topic-tag').forEach(t=>t.classList.remove('selected'));selectedTags=[];showScreen('input-screen');document.getElementById('user-input').focus();}
+function toggleTag(el){const t=el.textContent;if(el.classList.contains('selected')){el.classList.remove('selected');selectedTags=selectedTags.filter(x=>x!==t);}else{el.classList.add('selected');selectedTags.push(t);}}
+function getNextIndex(key,total){if(lastUsedIndex[key]===undefined)lastUsedIndex[key]=-1;let n;do{n=Math.floor(Math.random()*total);}while(n===lastUsedIndex[key]&&total>1);lastUsedIndex[key]=n;return n;}
+function startChat(){const c=characters[currentChar],txt=document.getElementById('user-input').value.trim(),tag=selectedTags.length>0?selectedTags[0]:null;document.getElementById('chat-dot').style.background=c.main;document.getElementById('chat-name').textContent=c.name;document.getElementById('chat-name').style.color=c.accent;const m=document.getElementById('chat-messages');m.innerHTML='';if(txt||tag){const b=document.createElement('div');b.className='msg-bubble msg-user';b.textContent=txt||tag;m.appendChild(b);}showScreen('chat-screen');const rk=tag&&c.responses[tag]?tag:'default',v=c.responses[rk],idx=getNextIndex(currentChar+'_'+rk,v.length);showTypingThenMessages(v[idx],c);}
+function showTypingThenMessages(msgs,c){const m=document.getElementById('chat-messages');let i=0;function next(){if(i>=msgs.length){showFeedback(c);return;}const t=document.createElement('div');t.className='typing-indicator';t.style.background=c.sub;t.innerHTML=`<span style="background:${c.main}"></span><span style="background:${c.main}"></span><span style="background:${c.main}"></span>`;m.appendChild(t);m.scrollTop=m.scrollHeight;setTimeout(()=>{t.remove();const b=document.createElement('div');b.className='msg-bubble';b.style.background=c.sub;b.style.color=c.accent;b.textContent=msgs[i];m.appendChild(b);m.scrollTop=m.scrollHeight;i++;setTimeout(next,400+Math.random()*300);},800+Math.random()*600);}setTimeout(next,600);}
+function showFeedback(c){const m=document.getElementById('chat-messages'),f=document.createElement('div');f.className='feedback-area';f.innerHTML='<button class="feedback-btn positive" onclick="submitFeedback(\'good\',this)">グッときた</button><button class="feedback-btn negative" onclick="submitFeedback(\'meh\',this)">いまいち</button>';m.appendChild(f);m.scrollTop=m.scrollHeight;}
+function submitFeedback(type,btn){const f=btn.parentElement,tag=selectedTags.length>0?selectedTags[0]:'default';if(!feedbackHistory[currentChar])feedbackHistory[currentChar]={};if(!feedbackHistory[currentChar][tag])feedbackHistory[currentChar][tag]={good:0,meh:0};feedbackHistory[currentChar][tag][type]++;localStorage.setItem('homete_feedback',JSON.stringify(feedbackHistory));f.innerHTML=`<div class="feedback-result">${type==='good'?'ありがとう。覚えておくね。':'ごめんね。もっとあなたに合う言葉、探すね。'}</div>`;const m=document.getElementById('chat-messages'),a=document.createElement('button'),h=document.createElement('button');a.className=h.className='another-btn';a.textContent='もう一回聞いてもらう';a.onclick=()=>selectCharacter(currentChar);h.textContent='ホームにもどる';h.onclick=goHome;m.appendChild(a);m.appendChild(h);m.scrollTop=m.scrollHeight;}
 init();
 </script>
 </body>
